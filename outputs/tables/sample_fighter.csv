@@ -1,0 +1,4 @@
+fighter_id,fighter_name,fighter_nick_name,height,weight_lbs,reach_inches,stance,dob,slpm,str_acc,sapm,str_def,td_avg,td_acc,td_def,sub_avg
+ad32471f01e7b1a5,Jeremy Jackson,Scorpion,"5' 10""",170.0,,Orthodox,1982-09-19,0.71,27,2.03,25,1.52,40,58,0.0
+13b2f59210dda9cc,Kevin Jackson,,"5' 10""",199.0,,Switch,1964-11-25,0.0,0,0.0,0,0.0,0,0,0.0
+b4eeac608fc82f88,Yves Jabouin,Tiger,"5' 7""",135.0,68.0,Orthodox,1979-05-30,3.06,41,2.93,62,1.94,60,82,0.1

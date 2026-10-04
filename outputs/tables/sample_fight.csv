@@ -1,0 +1,5 @@
+event_id,fight_id,weight_class,title_fight,r_id,b_id,winner_id,result_status,method,round,time,time_format,referee,details
+baf942f4bcb09894,4cd909fa0d3e0483,Welterweight,0,c3ea8deeba00462b,ad32471f01e7b1a5,c3ea8deeba00462b,win,Submission,2,1:11,3 Rnd (5-5-5),Herb Dean,"Injury  
+      Neck Injury"
+c61f66d8c3fd5f07,5ac9cf4ffc15ccca,Welterweight,0,f57a8a52ca401ed9,ad32471f01e7b1a5,f57a8a52ca401ed9,win,Submission,3,2:04,3 Rnd (5-5-5),Steve Mazzagatti,Armbar From Bottom Guard
+80e6d71e14c1d356,e8ec95cdef577733,Welterweight,0,79899ecf62020f6d,ad32471f01e7b1a5,79899ecf62020f6d,win,KO/TKO,1,1:27,3 Rnd (5-5-5),,Punches to Head From Mount

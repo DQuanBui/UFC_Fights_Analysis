@@ -1,0 +1,8 @@
+table,rows,columns,duplicate_rows,duplicate_keys,missing_keys
+event,1259,4,0,0,0
+fight,11441,14,0,0,0
+fighter,4581,16,0,0,0
+fighter_bonus,2409,2,0,0,0
+master,11441,93,0,0,0
+round,25131,48,0,0,0
+scrape_error,330,9,0,0,0

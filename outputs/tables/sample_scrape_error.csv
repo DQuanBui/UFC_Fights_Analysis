@@ -1,0 +1,4 @@
+error_id,entity_type,entity_id,context,url,error_name,description,occurred_at,resolved
+1,fight,fc89b69a4fe79603,,http://ufcstats.com/fight-details/fc89b69a4fe79603,PartialFightParse,"expected 2 round-by-round tables, found 0 -- this fight likely has no round stats on ufcstats.com (common for older fights)",2026-08-11 05:57:43,0
+2,fight,9325bcf98fa2a15e,,http://ufcstats.com/fight-details/9325bcf98fa2a15e,PartialFightParse,"expected 2 round-by-round tables, found 0 -- this fight likely has no round stats on ufcstats.com (common for older fights)",2026-08-11 05:57:49,0
+3,fight,6035a68279b69aeb,,http://ufcstats.com/fight-details/6035a68279b69aeb,PartialFightParse,"expected 2 round-by-round tables, found 0 -- this fight likely has no round stats on ufcstats.com (common for older fights)",2026-08-11 05:57:52,0

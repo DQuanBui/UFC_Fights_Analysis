@@ -1,0 +1,189 @@
+table,column,dtype,missing,missing_pct,unique,examples
+event,event_id,string,0,0.0,1259,495add4fbede0a44 | 1a50e734bb54861a | 681d07e328798ec0
+event,event_name,str,0,0.0,1259,UFC Fight Night: Gamrot vs. Salkilld | UFC Fight Night: Medic vs. Rodriguez | UFC Fight Night: Ankalaev vs. Guskov
+event,date,str,0,0.0,1214,2026-08-08 | 2026-08-01 | 2026-07-25
+event,location,str,476,37.80778395552025,174,"Las Vegas, Nevada, USA | Belgrade, Vojvodina, Serbia | Abu Dhabi, Abu Dhabi, United Arab Emirates"
+fight,event_id,string,0,0.0,1259,baf942f4bcb09894 | c61f66d8c3fd5f07 | 80e6d71e14c1d356
+fight,fight_id,string,0,0.0,11441,4cd909fa0d3e0483 | 5ac9cf4ffc15ccca | e8ec95cdef577733
+fight,weight_class,str,0,0.0,154,Welterweight | Middleweight | Light Heavyweight
+fight,title_fight,int64,0,0.0,2,0 | 1
+fight,r_id,string,0,0.0,2713,c3ea8deeba00462b | f57a8a52ca401ed9 | 79899ecf62020f6d
+fight,b_id,string,0,0.0,3650,ad32471f01e7b1a5 | 13b2f59210dda9cc | 253de74457bd6374
+fight,winner_id,string,203,1.7743204265361419,2517,c3ea8deeba00462b | f57a8a52ca401ed9 | 79899ecf62020f6d
+fight,result_status,str,0,0.0,3,win | no_contest | draw
+fight,method,str,0,0.0,11,Submission | KO/TKO | DQ
+fight,round,int64,0,0.0,6,2 | 3 | 1
+fight,time,str,0,0.0,438,1:11 | 2:04 | 1:27
+fight,time_format,str,0,0.0,36,3 Rnd (5-5-5) | 1 Rnd + OT (12-3) | 1 Rnd + 2OT (15-3-3)
+fight,referee,str,260,2.2725286251201817,302,Herb Dean | Steve Mazzagatti | John McCarthy
+fight,details,str,402,3.513678874224281,4864,"Injury  
+      Neck Injury | Armbar From Bottom Guard | Punches to Head From Mount"
+fighter,fighter_id,string,0,0.0,4581,ad32471f01e7b1a5 | 13b2f59210dda9cc | b4eeac608fc82f88
+fighter,fighter_name,str,0,0.0,4573,Jeremy Jackson | Kevin Jackson | Yves Jabouin
+fighter,fighter_nick_name,str,2029,44.291639380048025,1998,Scorpion | Tiger | Rampage
+fighter,height,str,372,8.120497707924033,27,"5' 10"" | 5' 7"" | 6' 1"""
+fighter,weight_lbs,float64,88,1.920977952412137,113,170.0 | 199.0 | 135.0
+fighter,reach_inches,float64,1992,43.48395546823838,27,68.0 | 73.0 | 71.0
+fighter,stance,str,897,19.58087753765553,5,Orthodox | Switch | Southpaw
+fighter,dob,str,510,11.132940406024886,3405,1982-09-19 | 1964-11-25 | 1979-05-30
+fighter,slpm,float64,0,0.0,716,0.71 | 0.0 | 3.06
+fighter,str_acc,int64,0,0.0,83,27 | 0 | 41
+fighter,sapm,float64,0,0.0,846,2.03 | 0.0 | 2.93
+fighter,str_def,int64,0,0.0,85,25 | 0 | 62
+fighter,td_avg,float64,0,0.0,575,1.52 | 0.0 | 1.94
+fighter,td_acc,int64,0,0.0,85,40 | 0 | 60
+fighter,td_def,int64,0,0.0,93,58 | 0 | 82
+fighter,sub_avg,float64,0,0.0,98,0.0 | 0.1 | 1.2
+fighter_bonus,fight_id,string,0,0.0,2351,21392a61a2cf24a3 | 1bf7f647f309464e | 8348ff428d1687ab
+fighter_bonus,bonus_type,str,0,0.0,4,Knockout of the Night | Performance of the Night | Submission of the Night
+master,fight_id,string,0,0.0,11441,4cd909fa0d3e0483 | 5ac9cf4ffc15ccca | e8ec95cdef577733
+master,event_id,string,0,0.0,1259,baf942f4bcb09894 | c61f66d8c3fd5f07 | 80e6d71e14c1d356
+master,event_name,str,0,0.0,1259,The Ultimate Fighter: The Comeback Finale | UFC 44: Undisputed | KOTC 15: Bad Intentions
+master,event_date,str,0,0.0,1214,2006-11-11 | 2003-09-26 | 2002-06-22
+master,event_location,str,2621,22.908836640153833,174,"Las Vegas, Nevada, USA | New Orleans, Louisiana, USA | Yokohama, Kanagawa, Japan"
+master,weight_class,str,0,0.0,154,Welterweight | Middleweight | Light Heavyweight
+master,title_fight,int64,0,0.0,2,0 | 1
+master,winner_id,string,203,1.7743204265361419,2517,c3ea8deeba00462b | f57a8a52ca401ed9 | 79899ecf62020f6d
+master,result_status,str,0,0.0,3,win | no_contest | draw
+master,method,str,0,0.0,11,Submission | KO/TKO | DQ
+master,finish_round,int64,0,0.0,6,2 | 3 | 1
+master,finish_time,str,0,0.0,438,1:11 | 2:04 | 1:27
+master,time_format,str,0,0.0,36,3 Rnd (5-5-5) | 1 Rnd + OT (12-3) | 1 Rnd + 2OT (15-3-3)
+master,referee,str,260,2.2725286251201817,302,Herb Dean | Steve Mazzagatti | John McCarthy
+master,details,str,402,3.513678874224281,4864,"Injury  
+      Neck Injury | Armbar From Bottom Guard | Punches to Head From Mount"
+master,bonuses,str,9090,79.45109693208636,7,Knockout of the Night | Performance of the Night | Submission of the Night
+master,r_fighter_id,string,0,0.0,2713,c3ea8deeba00462b | f57a8a52ca401ed9 | 79899ecf62020f6d
+master,r_fighter_name,str,0,0.0,2711,Pete Spratt | Nick Diaz | Joe Stevenson
+master,r_fighter_nick_name,str,3489,30.49558605017044,1389,The Secret Weapon | Daddy | The Sniper
+master,r_height,str,82,0.7167205663840573,25,"5' 9"" | 6' 1"" | 5' 7"""
+master,r_weight_lbs,float64,19,0.16606939952801328,83,170.0 | 145.0 | 199.0
+master,r_reach_inches,float64,1317,11.51123153570492,27,76.0 | 70.0 | 72.0
+master,r_stance,str,222,1.9403898260641552,5,Orthodox | Southpaw | Switch
+master,r_dob,str,142,1.2411502491040993,2289,1971-01-09 | 1983-08-02 | 1982-06-15
+master,r_slpm,float64,0,0.0,640,1.63 | 5.71 | 2.05
+master,r_str_acc,int64,0,0.0,72,48 | 42 | 44
+master,r_sapm,float64,0,0.0,667,1.33 | 3.84 | 2.44
+master,r_str_def,int64,0,0.0,71,55 | 59 | 60
+master,r_td_avg,float64,0,0.0,503,0.3 | 1.28 | 2.75
+master,r_td_acc,int64,0,0.0,83,100 | 32 | 44
+master,r_td_def,int64,0,0.0,89,46 | 60 | 39
+master,r_sub_avg,float64,0,0.0,69,0.3 | 1.0 | 2.2
+master,b_fighter_id,string,0,0.0,3650,ad32471f01e7b1a5 | 13b2f59210dda9cc | 253de74457bd6374
+master,b_fighter_name,str,0,0.0,3645,Jeremy Jackson | Kevin Jackson | Tony Fryklund
+master,b_fighter_nick_name,str,3733,32.62826675989861,1708,Scorpion | The Freak | The Truth
+master,b_height,str,168,1.4684031116161174,26,"5' 10"" | 6' 0"" | 6' 1"""
+master,b_weight_lbs,float64,52,0.4545057250240364,105,170.0 | 199.0 | 185.0
+master,b_reach_inches,float64,2343,20.478979110217637,27,74.0 | 71.0 | 68.0
+master,b_stance,str,414,3.61856481076829,5,Orthodox | Switch | Southpaw
+master,b_dob,str,295,2.578445940040206,2928,1982-09-19 | 1964-11-25 | 1971-03-26
+master,b_slpm,float64,0,0.0,680,0.71 | 0.0 | 3.49
+master,b_str_acc,int64,0,0.0,80,27 | 0 | 39
+master,b_sapm,float64,0,0.0,783,2.03 | 0.0 | 6.5
+master,b_str_def,int64,0,0.0,81,25 | 0 | 43
+master,b_td_avg,float64,0,0.0,538,1.52 | 0.0 | 0.71
+master,b_td_acc,int64,0,0.0,84,40 | 0 | 33
+master,b_td_def,int64,0,0.0,93,58 | 0 | 66
+master,b_sub_avg,float64,0,0.0,88,0.0 | 0.5 | 0.1
+master,r_total_kd,int64,0,0.0,6,0 | 1 | 2
+master,b_total_kd,int64,0,0.0,6,0 | 1 | 2
+master,r_total_sig_landed,int64,0,0.0,195,12 | 17 | 11
+master,r_total_sig_atmp,int64,0,0.0,382,15 | 24 | 17
+master,b_total_sig_landed,int64,0,0.0,186,5 | 9 | 0
+master,b_total_sig_atmp,int64,0,0.0,367,14 | 37 | 0
+master,r_total_total_str_landed,int64,0,0.0,270,40 | 92 | 12
+master,r_total_total_str_atmp,int64,0,0.0,411,43 | 107 | 16
+master,b_total_total_str_landed,int64,0,0.0,245,20 | 71 | 4
+master,b_total_total_str_atmp,int64,0,0.0,390,33 | 103 | 4
+master,r_total_td_success,int64,0,0.0,20,0 | 6 | 1
+master,r_total_td_atmp,int64,0,0.0,31,0 | 13 | 4
+master,b_total_td_success,int64,0,0.0,17,2 | 0 | 1
+master,b_total_td_atmp,int64,0,0.0,32,5 | 0 | 2
+master,r_total_sub_att,int64,0,0.0,12,0 | 2 | 1
+master,b_total_sub_att,int64,0,0.0,9,0 | 1 | 7
+master,r_total_rev,int64,0,0.0,7,1 | 0 | 3
+master,b_total_rev,int64,0,0.0,7,1 | 0 | 2
+master,r_total_sig_str_landed_head,int64,0,0.0,153,7 | 14 | 11
+master,r_total_sig_str_atmp_head,int64,0,0.0,327,10 | 20 | 15
+master,b_total_sig_str_landed_head,int64,0,0.0,145,0 | 9 | 13
+master,b_total_sig_str_atmp_head,int64,0,0.0,312,7 | 37 | 0
+master,r_total_sig_str_landed_body,int64,0,0.0,68,2 | 3 | 0
+master,r_total_sig_str_atmp_body,int64,0,0.0,91,2 | 4 | 0
+master,b_total_sig_str_landed_body,int64,0,0.0,67,1 | 0 | 4
+master,b_total_sig_str_atmp_body,int64,0,0.0,86,1 | 0 | 4
+master,r_total_sig_str_landed_leg,int64,0,0.0,66,3 | 0 | 1
+master,r_total_sig_str_atmp_leg,int64,0,0.0,77,3 | 0 | 1
+master,b_total_sig_str_landed_leg,int64,0,0.0,64,4 | 0 | 1
+master,b_total_sig_str_atmp_leg,int64,0,0.0,75,6 | 0 | 1
+master,r_total_sig_str_landed_distance,int64,0,0.0,182,4 | 1 | 0
+master,r_total_sig_str_atmp_distance,int64,0,0.0,363,5 | 3 | 0
+master,b_total_sig_str_landed_distance,int64,0,0.0,176,0 | 5 | 2
+master,b_total_sig_str_atmp_distance,int64,0,0.0,350,8 | 7 | 0
+master,r_total_sig_str_landed_clinch,int64,0,0.0,69,3 | 0 | 8
+master,r_total_sig_str_atmp_clinch,int64,0,0.0,87,3 | 0 | 1
+master,b_total_sig_str_landed_clinch,int64,0,0.0,60,5 | 1 | 0
+master,b_total_sig_str_atmp_clinch,int64,0,0.0,76,5 | 0 | 8
+master,r_total_sig_str_landed_ground,int64,0,0.0,83,5 | 16 | 11
+master,r_total_sig_str_atmp_ground,int64,0,0.0,119,7 | 21 | 15
+master,b_total_sig_str_landed_ground,int64,0,0.0,73,0 | 8 | 13
+master,b_total_sig_str_atmp_ground,int64,0,0.0,96,1 | 25 | 0
+master,r_total_ctrl_seconds,int64,0,0.0,802,67 | 402 | 0
+master,b_total_ctrl_seconds,int64,0,0.0,689,201 | 208 | 0
+master,rounds_fought,int64,0,0.0,7,2 | 3 | 1
+round,fight_id,string,0,0.0,11111,4cd909fa0d3e0483 | 5ac9cf4ffc15ccca | e8ec95cdef577733
+round,round_no,int64,0,0.0,6,1 | 2 | 3
+round,r_id,string,0,0.0,2544,c3ea8deeba00462b | f57a8a52ca401ed9 | 79899ecf62020f6d
+round,b_id,string,0,0.0,3455,ad32471f01e7b1a5 | 13b2f59210dda9cc | 253de74457bd6374
+round,r_kd,int64,0,0.0,5,0 | 1 | 2
+round,b_kd,int64,0,0.0,6,0 | 1 | 2
+round,r_sig_landed,int64,0,0.0,96,11 | 1 | 8
+round,r_sig_atmp,int64,0,0.0,171,14 | 1 | 12
+round,b_sig_landed,int64,0,0.0,93,5 | 0 | 3
+round,b_sig_atmp,int64,0,0.0,165,12 | 2 | 7
+round,r_total_str_landed,int64,0,0.0,154,37 | 3 | 60
+round,r_total_str_atmp,int64,0,0.0,199,40 | 3 | 69
+round,b_total_str_landed,int64,0,0.0,129,20 | 0 | 25
+round,b_total_str_atmp,int64,0,0.0,183,31 | 2 | 57
+round,r_td_success,int64,0,0.0,10,0 | 3 | 1
+round,r_td_atmp,int64,0,0.0,15,0 | 8 | 3
+round,b_td_success,int64,0,0.0,10,2 | 0 | 1
+round,b_td_atmp,int64,0,0.0,16,4 | 1 | 0
+round,r_sub_att,int64,0,0.0,9,0 | 2 | 1
+round,b_sub_att,int64,0,0.0,7,0 | 1 | 5
+round,r_rev,int64,0,0.0,5,1 | 0 | 2
+round,b_rev,int64,0,0.0,5,1 | 0 | 2
+round,r_ctrl,str,2658,10.576578727468068,298,1:00 | 0:07 | 3:54
+round,b_ctrl,str,2658,10.576578727468068,299,2:59 | 0:22 | 0:20
+round,r_sig_str_landed_head,int64,0,0.0,81,7 | 0 | 8
+round,r_sig_str_atmp_head,int64,0,0.0,151,10 | 0 | 12
+round,b_sig_str_landed_head,int64,0,0.0,79,0 | 3 | 6
+round,b_sig_str_atmp_head,int64,0,0.0,146,6 | 1 | 7
+round,r_sig_str_landed_body,int64,0,0.0,39,2 | 0 | 3
+round,r_sig_str_atmp_body,int64,0,0.0,45,2 | 0 | 3
+round,b_sig_str_landed_body,int64,0,0.0,35,1 | 0 | 4
+round,b_sig_str_atmp_body,int64,0,0.0,43,1 | 0 | 4
+round,r_sig_str_landed_leg,int64,0,0.0,34,2 | 1 | 0
+round,r_sig_str_atmp_leg,int64,0,0.0,40,2 | 1 | 0
+round,b_sig_str_landed_leg,int64,0,0.0,32,4 | 0 | 1
+round,b_sig_str_atmp_leg,int64,0,0.0,38,5 | 1 | 0
+round,r_sig_str_landed_distance,int64,0,0.0,88,3 | 1 | 0
+round,r_sig_str_atmp_distance,int64,0,0.0,167,4 | 1 | 0
+round,b_sig_str_landed_distance,int64,0,0.0,86,0 | 5 | 2
+round,b_sig_str_atmp_distance,int64,0,0.0,160,6 | 2 | 0
+round,r_sig_str_landed_clinch,int64,0,0.0,45,3 | 0 | 8
+round,r_sig_str_atmp_clinch,int64,0,0.0,53,3 | 0 | 1
+round,b_sig_str_landed_clinch,int64,0,0.0,42,5 | 0 | 1
+round,b_sig_str_atmp_clinch,int64,0,0.0,52,5 | 0 | 3
+round,r_sig_str_landed_ground,int64,0,0.0,58,5 | 0 | 8
+round,r_sig_str_atmp_ground,int64,0,0.0,81,7 | 0 | 12
+round,b_sig_str_landed_ground,int64,0,0.0,55,0 | 2 | 6
+round,b_sig_str_atmp_ground,int64,0,0.0,71,1 | 0 | 2
+scrape_error,error_id,string,0,0.0,330,1 | 2 | 3
+scrape_error,entity_type,str,0,0.0,1,fight
+scrape_error,entity_id,string,0,0.0,330,fc89b69a4fe79603 | 9325bcf98fa2a15e | 6035a68279b69aeb
+scrape_error,context,float64,330,100.0,0,
+scrape_error,url,str,0,0.0,330,http://ufcstats.com/fight-details/fc89b69a4fe79603 | http://ufcstats.com/fight-details/9325bcf98fa2a15e | http://ufcstats.com/fight-details/6035a68279b69aeb
+scrape_error,error_name,str,0,0.0,1,PartialFightParse
+scrape_error,description,str,0,0.0,1,"expected 2 round-by-round tables, found 0 -- this fight likely has no round stats on ufcstats.com (common for older fights)"
+scrape_error,occurred_at,str,0,0.0,265,2026-08-11 05:57:43 | 2026-08-11 05:57:49 | 2026-08-11 05:57:52
+scrape_error,resolved,int64,0,0.0,1,0
