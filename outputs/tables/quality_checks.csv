@@ -1,0 +1,97 @@
+check,affected_rows,severity,action
+Malformed event dates,0,warning,Retain; exclude from dated analyses
+Non-UFC event records,475,info,Retain in audit; exclude from headline UFC scope
+Missing event locations,476,info,Unknown; exclude from geographic denominators
+Duplicate normalized event names,0,info,Keep event IDs; do not merge names
+Malformed nonmissing height,0,info,Set parsed measure to missing
+Malformed nonmissing DOB,0,info,Set parsed date to missing
+Implausible height_inches,0,warning,Retain source; analytical measure set to missing
+Implausible reach_inches,0,warning,Retain source; analytical measure set to missing
+Implausible weight_lbs,0,warning,Retain source; analytical measure set to missing
+Historical profile weight above 400 lb,3,info,Preserve flagged historical open-weight outliers; profile weight is not a weigh-in
+Repeated fighter names across IDs,16,info,Keep distinct IDs; use ID suffix in selectors
+Invalid snapshot percentage str_acc,0,info,Snapshot metrics excluded from modeling
+Invalid snapshot percentage str_def,0,info,Snapshot metrics excluded from modeling
+Invalid snapshot percentage td_acc,0,info,Snapshot metrics excluded from modeling
+Invalid snapshot percentage td_def,0,info,Snapshot metrics excluded from modeling
+Invalid or absent winner on win record,0,warning,Exclude from winner models
+Same fighter in both corners,0,warning,Requires source review
+Invalid duration or schedule,0,warning,Keep fight; omit duration and per-minute metrics
+Repeated event and fighter pairing,2,info,"Keep IDs; possible tournament rematches, never drop automatically"
+Implausible age in r corner,0,warning,Set to missing; preserve original DOB
+Implausible age in b corner,1,warning,Set to missing; preserve original DOB
+Negative r_kd,0,warning,Set analytical measure to missing
+Negative r_sig_landed,0,warning,Set analytical measure to missing
+Negative r_sig_atmp,0,warning,Set analytical measure to missing
+Negative r_total_str_landed,0,warning,Set analytical measure to missing
+Negative r_total_str_atmp,0,warning,Set analytical measure to missing
+Negative r_td_success,0,warning,Set analytical measure to missing
+Negative r_td_atmp,0,warning,Set analytical measure to missing
+Negative r_sub_att,0,warning,Set analytical measure to missing
+Negative r_rev,0,warning,Set analytical measure to missing
+Negative r_ctrl_seconds,0,warning,Set analytical measure to missing
+Negative r_sig_str_landed_head,0,warning,Set analytical measure to missing
+Negative r_sig_str_atmp_head,0,warning,Set analytical measure to missing
+Negative r_sig_str_landed_body,0,warning,Set analytical measure to missing
+Negative r_sig_str_atmp_body,0,warning,Set analytical measure to missing
+Negative r_sig_str_landed_leg,0,warning,Set analytical measure to missing
+Negative r_sig_str_atmp_leg,0,warning,Set analytical measure to missing
+Negative r_sig_str_landed_distance,0,warning,Set analytical measure to missing
+Negative r_sig_str_atmp_distance,0,warning,Set analytical measure to missing
+Negative r_sig_str_landed_clinch,0,warning,Set analytical measure to missing
+Negative r_sig_str_atmp_clinch,0,warning,Set analytical measure to missing
+Negative r_sig_str_landed_ground,0,warning,Set analytical measure to missing
+Negative r_sig_str_atmp_ground,0,warning,Set analytical measure to missing
+r sig_landed exceeds attempts,0,warning,Mask both measures
+r total_str_landed exceeds attempts,0,warning,Mask both measures
+r td_success exceeds attempts,0,warning,Mask both measures
+r sig_str_landed_head exceeds attempts,0,warning,Mask both measures
+r sig_str_landed_body exceeds attempts,0,warning,Mask both measures
+r sig_str_landed_leg exceeds attempts,0,warning,Mask both measures
+r sig_str_landed_distance exceeds attempts,0,warning,Mask both measures
+r sig_str_landed_clinch exceeds attempts,0,warning,Mask both measures
+r sig_str_landed_ground exceeds attempts,0,warning,Mask both measures
+r control exceeds round duration,0,warning,Set analytical control to missing
+Negative b_kd,0,warning,Set analytical measure to missing
+Negative b_sig_landed,0,warning,Set analytical measure to missing
+Negative b_sig_atmp,0,warning,Set analytical measure to missing
+Negative b_total_str_landed,0,warning,Set analytical measure to missing
+Negative b_total_str_atmp,0,warning,Set analytical measure to missing
+Negative b_td_success,0,warning,Set analytical measure to missing
+Negative b_td_atmp,0,warning,Set analytical measure to missing
+Negative b_sub_att,0,warning,Set analytical measure to missing
+Negative b_rev,0,warning,Set analytical measure to missing
+Negative b_ctrl_seconds,0,warning,Set analytical measure to missing
+Negative b_sig_str_landed_head,0,warning,Set analytical measure to missing
+Negative b_sig_str_atmp_head,0,warning,Set analytical measure to missing
+Negative b_sig_str_landed_body,0,warning,Set analytical measure to missing
+Negative b_sig_str_atmp_body,0,warning,Set analytical measure to missing
+Negative b_sig_str_landed_leg,0,warning,Set analytical measure to missing
+Negative b_sig_str_atmp_leg,0,warning,Set analytical measure to missing
+Negative b_sig_str_landed_distance,0,warning,Set analytical measure to missing
+Negative b_sig_str_atmp_distance,0,warning,Set analytical measure to missing
+Negative b_sig_str_landed_clinch,0,warning,Set analytical measure to missing
+Negative b_sig_str_atmp_clinch,0,warning,Set analytical measure to missing
+Negative b_sig_str_landed_ground,0,warning,Set analytical measure to missing
+Negative b_sig_str_atmp_ground,0,warning,Set analytical measure to missing
+b sig_landed exceeds attempts,0,warning,Mask both measures
+b total_str_landed exceeds attempts,0,warning,Mask both measures
+b td_success exceeds attempts,0,warning,Mask both measures
+b sig_str_landed_head exceeds attempts,0,warning,Mask both measures
+b sig_str_landed_body exceeds attempts,0,warning,Mask both measures
+b sig_str_landed_leg exceeds attempts,0,warning,Mask both measures
+b sig_str_landed_distance exceeds attempts,0,warning,Mask both measures
+b sig_str_landed_clinch exceeds attempts,0,warning,Mask both measures
+b sig_str_landed_ground exceeds attempts,0,warning,Mask both measures
+b control exceeds round duration,0,warning,Set analytical control to missing
+Fights without complete round statistics,331,info,Retain outcomes; exclude incomplete totals from performance metrics
+Scrape errors with missing round stats,330,info,Coverage is nonrandom; display coverage by year
+Master zero-filled fights without round records,330,info,Rebuild totals from round source; missing is not zero
+Master reconciliation: event_id,0,warning,Normalized source tables are authoritative
+Master reconciliation: winner_id,0,warning,Normalized source tables are authoritative
+Master reconciliation: r_fighter_id,0,warning,Normalized source tables are authoritative
+Master reconciliation: b_fighter_id,0,warning,Normalized source tables are authoritative
+Master reconciliation: event_name,0,warning,Normalized source tables are authoritative
+Master reconciliation: method,0,warning,Normalized source tables are authoritative
+Master reconciliation: weight_class,0,warning,Normalized source tables are authoritative
+Master reconciliation: finish_round,0,warning,Normalized source tables are authoritative
