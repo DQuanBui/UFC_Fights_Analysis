@@ -1,0 +1,2 @@
+question,title_n,non_title_n,title_mean_minutes,non_title_mean_minutes,mean_difference_minutes,mann_whitney_p,rank_biserial
+Title vs non-title among standard five-round fights,380,405,15.953815789473683,14.436831275720163,1.5169845137535205,0.03294093034260542,0.0854126055880442
