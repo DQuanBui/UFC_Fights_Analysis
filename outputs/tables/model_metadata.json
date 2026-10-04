@@ -1,0 +1,25 @@
+{
+  "selected_model": "Gradient boosting",
+  "selection_metric": "lowest 2020\u20132022 validation log loss",
+  "train": "1994\u20132019",
+  "validation": "2020\u20132022",
+  "test": "2023\u20132026 snapshot end",
+  "features": [
+    "age_diff",
+    "prior_ufc_fights_diff",
+    "prior_wins_diff",
+    "prior_losses_diff",
+    "prior_win_rate_diff",
+    "prior_ko_rate_diff",
+    "prior_submission_rate_diff",
+    "prior_win_streak_diff",
+    "prior_title_fights_diff",
+    "prior_sig_per_minute_diff",
+    "prior_sig_accuracy_diff",
+    "prior_td_per_15_diff",
+    "prior_td_accuracy_diff",
+    "weight_class"
+  ],
+  "final_fit": "1994\u20132022",
+  "evaluation": "Sequential historical replay: earlier test outcomes may update later histories; model weights stay fixed."
+}
