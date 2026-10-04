@@ -1,0 +1,46 @@
+weight_class,unequal_pairs,advantaged_win_rate,attribute
+Bantamweight,772,0.42875647668393785,age
+Catch Weight,80,0.45,age
+Featherweight,861,0.41579558652729387,age
+Flyweight,417,0.4148681055155875,age
+Heavyweight,745,0.42013422818791946,age
+Light Heavyweight,742,0.4474393530997305,age
+Lightweight,1424,0.4002808988764045,age
+Middleweight,1137,0.4529463500439754,age
+Open Weight,47,0.6170212765957447,age
+Other / unspecified,8,0.5,age
+Super Heavyweight,1,0.0,age
+Welterweight,1381,0.4395365677045619,age
+Women's Bantamweight,247,0.44534412955465585,age
+Women's Featherweight,30,0.5,age
+Women's Flyweight,273,0.42857142857142855,age
+Women's Strawweight,372,0.40860215053763443,age
+Bantamweight,624,0.5288461538461539,height_inches
+Catch Weight,67,0.4925373134328358,height_inches
+Featherweight,726,0.5041322314049587,height_inches
+Flyweight,340,0.4264705882352941,height_inches
+Heavyweight,632,0.5395569620253164,height_inches
+Light Heavyweight,611,0.5417348608837971,height_inches
+Lightweight,1188,0.5067340067340067,height_inches
+Middleweight,942,0.5520169851380042,height_inches
+Open Weight,84,0.5119047619047619,height_inches
+Other / unspecified,7,0.2857142857142857,height_inches
+Super Heavyweight,1,0.0,height_inches
+Welterweight,1179,0.539440203562341,height_inches
+Women's Bantamweight,195,0.5794871794871795,height_inches
+Women's Featherweight,27,0.5555555555555556,height_inches
+Women's Flyweight,223,0.47533632286995514,height_inches
+Women's Strawweight,314,0.5063694267515924,height_inches
+Bantamweight,650,0.49538461538461537,reach_inches
+Catch Weight,72,0.4583333333333333,reach_inches
+Featherweight,709,0.5091678420310296,reach_inches
+Flyweight,352,0.4744318181818182,reach_inches
+Heavyweight,516,0.5872093023255814,reach_inches
+Light Heavyweight,572,0.5541958041958042,reach_inches
+Lightweight,1082,0.5166358595194085,reach_inches
+Middleweight,877,0.5324971493728621,reach_inches
+Welterweight,1048,0.5267175572519084,reach_inches
+Women's Bantamweight,186,0.5752688172043011,reach_inches
+Women's Featherweight,26,0.46153846153846156,reach_inches
+Women's Flyweight,234,0.49145299145299143,reach_inches
+Women's Strawweight,305,0.4262295081967213,reach_inches
