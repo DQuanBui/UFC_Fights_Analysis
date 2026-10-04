@@ -189,3 +189,58 @@ def export_outcomes(data):
             minutes=('fight_duration_seconds',lambda x:x.mean()/60)).reset_index()}
     save_tables(tables)
     return tables
+
+
+def performance_summary(appearances, group):
+    rows=[]
+    for value, frame in appearances.groupby(group,dropna=False):
+        observed=frame[frame.sig_landed.notna() & frame.fight_duration_seconds.gt(0)]
+        seconds=observed.fight_duration_seconds.sum()
+        rows.append({group:value,'appearances':len(frame),'observed_appearances':len(observed),
+            'coverage':len(observed)/len(frame),'sig_landed_per_minute':observed.sig_landed.sum()*60/seconds if seconds else np.nan,
+            'sig_accuracy':observed.sig_landed.sum()/observed.sig_atmp.sum() if observed.sig_atmp.sum() else np.nan,
+            'td_per_15':observed.td_success.sum()*900/seconds if seconds else np.nan,
+            'td_accuracy':observed.td_success.sum()/observed.td_atmp.sum() if observed.td_atmp.sum() else np.nan,
+            'knockdowns_per_15':observed.kd.sum()*900/seconds if seconds else np.nan,
+            'sub_attempts_per_15':observed.sub_att.sum()*900/seconds if seconds else np.nan,
+            **{f'{area}_share':observed[f'sig_str_landed_{area}'].sum()/observed.sig_landed.sum() if observed.sig_landed.sum() else np.nan
+               for area in ['head','body','leg','distance','clinch','ground']}})
+    return pd.DataFrame(rows)
+
+
+def export_performance(data):
+    fights, appearances=cohort(data)
+    bonus=data['bonuses'].merge(fights[['fight_id','fight_year','weight_class','outcome_group','is_finish','r_id','b_id']],on='fight_id',validate='many_to_one')
+    # A row identifies a decorated fight, not the number or identities of award recipients.
+    decorated=fights.assign(has_bonus=fights.fight_id.isin(bonus.fight_id))
+    bonus_rates=decorated.groupby('outcome_group').has_bonus.agg(['size','sum','mean']).reset_index()
+    bonus_rates.columns=['outcome_group','fights','decorated_fights','decorated_fight_rate']
+    fotn=bonus[bonus.bonus_type.eq('Fight of the Night')]
+    participants=pd.concat([fotn[['fight_id',c]].rename(columns={c:'fighter_id'}) for c in ['r_id','b_id']],ignore_index=True)
+    fotn_counts=participants.groupby('fighter_id').size().rename('fotn_fight_appearances').reset_index().merge(
+        data['fighters'][['fighter_id','fighter_name']],on='fighter_id',validate='one_to_one').sort_values('fotn_fight_appearances',ascending=False)
+    rounds=data['rounds'][data['rounds'].in_scope].copy()
+    # Per-round activity must use actual exposure; the last round may be short.
+    round_rows=[]
+    for number, group in rounds.groupby('round_no'):
+        valid=group[group.round_duration_seconds.gt(0)]
+        round_rows.append(dict(round_no=number,fighter_rounds=len(group),observed_seconds=valid.round_duration_seconds.sum(),
+            sig_landed_per_minute=valid.sig_landed.sum()/valid.round_duration_seconds.sum()*60,
+            td_per_15=valid.td_success.sum()/valid.round_duration_seconds.sum()*900))
+    tables={'performance_by_year':performance_summary(appearances,'fight_year'),
+        'performance_by_division':performance_summary(appearances,'weight_class'),
+        'performance_by_result':performance_summary(appearances[appearances.decisive],'won'),
+        'round_activity':pd.DataFrame(round_rows),
+        'bonus_by_year':bonus.groupby(['fight_year','bonus_type']).size().rename('fight_category_records').reset_index(),
+        'bonus_by_division':bonus.groupby(['weight_class','bonus_type']).size().rename('fight_category_records').reset_index(),
+        'bonus_rates':bonus_rates,'fotn_appearances':fotn_counts,
+        'bonus_categories':bonus.groupby('bonus_type').agg(records=('fight_id','size'),first_year=('fight_year','min'),last_year=('fight_year','max')).reset_index()}
+    save_tables(tables)
+    return tables
+
+
+def export_analysis(data):
+    output={}
+    for export in (export_history,export_fighters,export_outcomes,export_performance):
+        output.update(export(data))
+    return output
