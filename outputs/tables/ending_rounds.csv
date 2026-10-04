@@ -1,0 +1,26 @@
+outcome_group,finish_round,fights
+Decision,1,6
+Decision,2,24
+Decision,3,3712
+Decision,5,296
+Draw,2,4
+Draw,3,54
+Draw,5,7
+KO/TKO,1,1560
+KO/TKO,2,857
+KO/TKO,3,414
+KO/TKO,4,33
+KO/TKO,5,26
+No contest,1,37
+No contest,2,25
+No contest,3,28
+No contest,5,1
+Other,1,14
+Other,2,5
+Other,3,3
+Other,4,1
+Submission,1,877
+Submission,2,543
+Submission,3,267
+Submission,4,17
+Submission,5,9

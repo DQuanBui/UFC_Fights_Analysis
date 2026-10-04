@@ -126,3 +126,66 @@ def export_fighters(data):
     tables['age_profile']['win_rate']=safe_ratio(tables['age_profile'].wins,tables['age_profile'].decisive)
     save_tables(tables)
     return tables
+
+
+def round_hazard(fights):
+    """Conditional finish risk, separately for standard three- and five-round bouts."""
+    rows=[]
+    standard=fights[fights.standard_format]
+    for scheduled, group in standard.groupby('scheduled_rounds'):
+        for round_no in range(1,int(scheduled)+1):
+            reached=group.finish_round.ge(round_no)
+            finishes=reached & group.finish_round.eq(round_no) & group.is_finish
+            n=int(reached.sum())
+            rows.append(dict(scheduled_rounds=int(scheduled), round_no=round_no, at_risk=n,
+                finishes=int(finishes.sum()), finish_risk=finishes.sum()/n if n else np.nan))
+    return pd.DataFrame(rows)
+
+
+def duration_curve(fights):
+    """Descriptive fraction still fighting; all endings count as endpoints."""
+    rows=[]
+    standard=fights[fights.standard_format & fights.fight_duration_seconds.notna()]
+    for scheduled, group in standard.groupby('scheduled_rounds'):
+        durations=group.fight_duration_seconds
+        for second in np.arange(0,scheduled*300+1,30):
+            rows.append(dict(scheduled_rounds=scheduled,seconds=second,still_fighting=(durations>second).mean(),fights=len(group)))
+    return pd.DataFrame(rows)
+
+
+def composition_adjustment(fights):
+    """Compare 2010s with full 2020–2025 years at a fixed shared division mix."""
+    rows=fights[fights.fight_year.between(2010,2025)].copy()
+    rows['period']=np.where(rows.fight_year.lt(2020),'2010–2019','2020–2025')
+    cells=rows.groupby(['weight_class','period']).is_decision.agg(['size','mean'])
+    counts=cells['size'].unstack('period')
+    shared=counts.index[counts.ge(50).all(axis=1)]
+    supported=cells.loc[shared]
+    weights=supported['size'].groupby('weight_class').sum()
+    weights=weights/weights.sum()
+    output=[]
+    for period, group in rows.groupby('period'):
+        rates=supported.xs(period,level='period')['mean']
+        output.append(dict(period=period,all_division_decision_rate=group.is_decision.mean(),
+            standardized_decision_rate=(rates*weights).sum(),shared_divisions=len(shared),
+            retained_fights=group.weight_class.isin(shared).sum(),all_fights=len(group)))
+    return pd.DataFrame(output)
+
+
+def export_outcomes(data):
+    fights, appearances=cohort(data)
+    methods=fights.groupby(['result_status','method','outcome_group']).size().rename('fights').reset_index()
+    methods['share_all_fights']=methods.fights/len(fights)
+    era=fights.groupby('era').agg(fights=('fight_id','size'),years=('fight_year','nunique'),
+        finish_rate=('is_finish','mean'),ko_rate=('is_ko','mean'),submission_rate=('is_submission','mean'),
+        decision_rate=('is_decision','mean'),duration_minutes=('fight_duration_seconds',lambda x:x.mean()/60))
+    era['fights_per_observed_year']=era.fights/era.years
+    for col in ['sig_per_minute','td_per_15','age','height_inches','reach_inches']:
+        era['mean_'+col]=appearances.groupby('era')[col].mean()
+    tables={'outcome_methods':methods, 'era_comparison':era.reset_index(), 'round_hazard':round_hazard(fights),
+        'duration_curve':duration_curve(fights), 'division_mix_adjustment':composition_adjustment(fights),
+        'ending_rounds':fights.groupby(['outcome_group','finish_round']).size().rename('fights').reset_index(),
+        'title_duration':fights.groupby(['title_fight','scheduled_rounds']).agg(fights=('fight_id','size'),
+            minutes=('fight_duration_seconds',lambda x:x.mean()/60)).reset_index()}
+    save_tables(tables)
+    return tables

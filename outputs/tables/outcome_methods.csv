@@ -1,0 +1,15 @@
+result_status,method,outcome_group,fights,share_all_fights
+draw,Decision - Majority,Draw,38,0.004308390022675737
+draw,Decision - Split,Draw,17,0.001927437641723356
+draw,Decision - Unanimous,Draw,7,0.0007936507936507937
+draw,Other,Draw,2,0.00022675736961451248
+draw,Overturned,Draw,1,0.00011337868480725624
+no_contest,Could Not Continue,No contest,33,0.0037414965986394557
+no_contest,Overturned,No contest,58,0.006575963718820862
+win,DQ,Other,23,0.0026077097505668935
+win,Decision - Majority,Decision,66,0.007482993197278911
+win,Decision - Split,Decision,811,0.0919501133786848
+win,Decision - Unanimous,Decision,3161,0.35839002267573694
+win,KO/TKO,KO/TKO,2792,0.3165532879818594
+win,Submission,Submission,1713,0.19421768707482992
+win,TKO - Doctor's Stoppage,KO/TKO,98,0.011111111111111112
