@@ -160,6 +160,9 @@ def composition_adjustment(fights):
     cells=rows.groupby(['weight_class','period']).is_decision.agg(['size','mean'])
     counts=cells['size'].unstack('period')
     shared=counts.index[counts.ge(50).all(axis=1)]
+    if len(shared)==0 or len(counts.columns)<2:
+        return pd.DataFrame(columns=['period','all_division_decision_rate','standardized_decision_rate',
+            'shared_divisions','retained_fights','all_fights'])
     supported=cells.loc[shared]
     weights=supported['size'].groupby('weight_class').sum()
     weights=weights/weights.sum()
