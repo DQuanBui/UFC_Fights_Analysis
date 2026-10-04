@@ -1,0 +1,37 @@
+﻿[
+    {
+        "file":  "event.csv",
+        "sha256":  "29cb7f92eaf6375590b8d7fa4dfcb8a231b711252c4524925f7be4f10f907ec7",
+        "bytes":  93905
+    },
+    {
+        "file":  "fight.csv",
+        "sha256":  "f28a77d4f56654f795dc3872cbe63a46059a8b3ff28bed77d085f2d4b557b81d",
+        "bytes":  2238115
+    },
+    {
+        "file":  "fighter.csv",
+        "sha256":  "5a55b4cacf0b7e6799f27fab6c001527f0db3c1fe8af14b13d6f550b58149882",
+        "bytes":  454720
+    },
+    {
+        "file":  "fighter_bonus.csv",
+        "sha256":  "ae58b3d68a5d21f797572cbf618f902145a4b4c542fa7840d581cd8899208295",
+        "bytes":  98911
+    },
+    {
+        "file":  "master.csv",
+        "sha256":  "9b6ecae4d63b65d9f9c0794d9607fee852fac7140f1610ee682b4c8429b30993",
+        "bytes":  6292784
+    },
+    {
+        "file":  "round.csv",
+        "sha256":  "5270dac7f34db244dabb4f44faf43b68964bf636f6964f4faa1461a60d4fc9da",
+        "bytes":  4009652
+    },
+    {
+        "file":  "scrape_error.csv",
+        "sha256":  "c1923c2ffebc3f6309814fd8c98964c3921779cf4baf456a2e761cde42191009",
+        "bytes":  81160
+    }
+]
