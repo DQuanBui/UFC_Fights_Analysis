@@ -5,6 +5,7 @@ __pycache__/
 .ipynb_checkpoints/
 .streamlit/secrets.toml
 outputs/models/
+data/processed/*.pkl
 outputs/validation/
 *.log
 .DS_Store

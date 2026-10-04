@@ -1,0 +1,43 @@
+"""Run with python -m src.pipeline; all paths are repository-relative."""
+import argparse
+from .data_loader import load_raw, verify_raw, profile_sources, PROCESSED, TABLES
+from .cleaning import clean_tables
+from .feature_engineering import build_features
+
+
+def prepare(save=True):
+    verify_raw()
+    raw = load_raw()
+    if save:
+        profile_sources(raw)
+    data = build_features(clean_tables(raw))
+    if save:
+        PROCESSED.mkdir(parents=True, exist_ok=True)
+        for name, frame in data.items():
+            if name == 'quality':
+                frame.to_csv(TABLES / 'quality_checks.csv', index=False)
+            else:
+                frame.to_pickle(PROCESSED / f'{name}.pkl')
+        data['fights'].to_csv(PROCESSED / 'fights.csv', index=False)
+    return data
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--all', action='store_true', help='Also rebuild analyses, charts and models')
+    args = parser.parse_args()
+    data = prepare()
+    print(f"Prepared {data['fights'].in_scope.sum():,} scoped UFC fights")
+    if args.all:
+        from .analysis import export_analysis
+        from .visualization import export_charts
+        from .statistics import export_statistics
+        from .modeling import train_models
+        export_analysis(data)
+        export_statistics(data)
+        train_models(data['fights'])
+        export_charts(data)
+
+
+if __name__ == '__main__':
+    main()
