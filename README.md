@@ -95,31 +95,6 @@ The selected model's event-bootstrap accuracy interval is **58.1%–62.6%**. A s
 
 Evaluation is sequential replay: earlier test outcomes may update later histories while model parameters stay fixed. Snapshot corrections cannot be reconstructed as known in real time. This is an analytical demonstration, **not a betting system**.
 
-## Streamlit Dashboard
-
-Eleven views cover overview KPIs, evolution, fighters, outcomes, divisions, striking/grappling, events, bonuses, fighter comparison, held-out prediction replay and key insights. Filters include year, division, outcome, fighter, event, location and gender label. Filtered data can be downloaded; preparation is cached.
-
-From the repository root:
-
-```powershell
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
-streamlit run dashboard/app.py
-```
-
-On macOS/Linux, activate with `source .venv/bin/activate`. Open the local URL printed by Streamlit. There is no public deployment URL.
-
-Rebuild and validate:
-
-```powershell
-python -m src.pipeline --all
-python -m src.notebooks --execute
-python -m pytest -q
-```
-
-All eight notebooks include executed outputs. Tests cover source preservation, durations, missingness, denominators, temporal history, metric reconciliation, dashboard navigation and filter edge cases. The live dashboard and representative charts were also visually reviewed.
-
 ## Repository Structure
 
 ```text
@@ -135,21 +110,10 @@ DATA_NOTES.md        Scope, definitions, assumptions and limitations
 FINDINGS.md          Sixteen evidence-based findings
 ```
 
-## Limitations
-
-- Source completeness and historical authenticity are not independently certified; totals describe the supplied snapshot.
-- Name-based promotion classification needs review when refreshing data. Early round-stat missingness is nonrandom; 2026 is incomplete.
-- Profile weight and stance are snapshots. Repeated fighters limit independence in statistical tests.
-- Bonus recipient IDs, cash amounts, venue names, rankings, odds and reliable card order are absent; unsupported rankings are withheld.
-- Associations do not establish causation, and prediction remains uncertain.
-- Third-party data licensing is not independently confirmed; this repository does not assign a license to that data.
-
 ## Future Improvements
 
 Validate against an independent event census, add timestamped updates, evaluate expanding-window backtests and opponent-adjusted Elo, and incorporate licensed odds or rankings only when historical availability can be established.
 
 ## Contact
 
-For any inquiries or questions regarding the project, please contact me at:
-
-[dbui10@fordham.edu](mailto:dbui10@fordham.edu)
+For any inquiries or questions regarding the project, please contact me at: [dbui10@fordham.edu](mailto:dbui10@fordham.edu)
