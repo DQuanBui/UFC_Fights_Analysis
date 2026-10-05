@@ -1,0 +1,86 @@
+check,affected_rows,interpretation
+Orphans fight.event_id,0,Expected zero
+Orphans fight.r_id,0,Expected zero
+Orphans fight.b_id,0,Expected zero
+Orphans round.fight_id,0,Expected zero
+Orphans fighter_bonus.fight_id,0,Expected zero
+"Strike decomposition landed ('head', 'body', 'leg')",0,Expected zero on observed statistics
+"Strike decomposition atmp ('head', 'body', 'leg')",0,Expected zero on observed statistics
+"Strike decomposition landed ('distance', 'clinch', 'ground')",0,Expected zero on observed statistics
+"Strike decomposition atmp ('distance', 'clinch', 'ground')",0,Expected zero on observed statistics
+Master total reconciliation: r_total_kd,0,Compare known complete reconstructed totals only
+Master total reconciliation: r_total_sig_landed,0,Compare known complete reconstructed totals only
+Master total reconciliation: r_total_sig_atmp,0,Compare known complete reconstructed totals only
+Master total reconciliation: r_total_total_str_landed,0,Compare known complete reconstructed totals only
+Master total reconciliation: r_total_total_str_atmp,0,Compare known complete reconstructed totals only
+Master total reconciliation: r_total_td_success,0,Compare known complete reconstructed totals only
+Master total reconciliation: r_total_td_atmp,0,Compare known complete reconstructed totals only
+Master total reconciliation: r_total_sub_att,0,Compare known complete reconstructed totals only
+Master total reconciliation: r_total_rev,0,Compare known complete reconstructed totals only
+Master total reconciliation: r_total_ctrl_seconds,0,Compare known complete reconstructed totals only
+Master total reconciliation: r_total_sig_str_landed_head,0,Compare known complete reconstructed totals only
+Master total reconciliation: r_total_sig_str_landed_body,0,Compare known complete reconstructed totals only
+Master total reconciliation: r_total_sig_str_landed_leg,0,Compare known complete reconstructed totals only
+Master total reconciliation: r_total_sig_str_landed_distance,0,Compare known complete reconstructed totals only
+Master total reconciliation: r_total_sig_str_landed_clinch,0,Compare known complete reconstructed totals only
+Master total reconciliation: r_total_sig_str_landed_ground,0,Compare known complete reconstructed totals only
+Master total reconciliation: r_total_sig_str_atmp_head,0,Compare known complete reconstructed totals only
+Master total reconciliation: r_total_sig_str_atmp_body,0,Compare known complete reconstructed totals only
+Master total reconciliation: r_total_sig_str_atmp_leg,0,Compare known complete reconstructed totals only
+Master total reconciliation: r_total_sig_str_atmp_distance,0,Compare known complete reconstructed totals only
+Master total reconciliation: r_total_sig_str_atmp_clinch,0,Compare known complete reconstructed totals only
+Master total reconciliation: r_total_sig_str_atmp_ground,0,Compare known complete reconstructed totals only
+Master total reconciliation: b_total_kd,0,Compare known complete reconstructed totals only
+Master total reconciliation: b_total_sig_landed,0,Compare known complete reconstructed totals only
+Master total reconciliation: b_total_sig_atmp,0,Compare known complete reconstructed totals only
+Master total reconciliation: b_total_total_str_landed,0,Compare known complete reconstructed totals only
+Master total reconciliation: b_total_total_str_atmp,0,Compare known complete reconstructed totals only
+Master total reconciliation: b_total_td_success,0,Compare known complete reconstructed totals only
+Master total reconciliation: b_total_td_atmp,0,Compare known complete reconstructed totals only
+Master total reconciliation: b_total_sub_att,0,Compare known complete reconstructed totals only
+Master total reconciliation: b_total_rev,0,Compare known complete reconstructed totals only
+Master total reconciliation: b_total_ctrl_seconds,0,Compare known complete reconstructed totals only
+Master total reconciliation: b_total_sig_str_landed_head,0,Compare known complete reconstructed totals only
+Master total reconciliation: b_total_sig_str_landed_body,0,Compare known complete reconstructed totals only
+Master total reconciliation: b_total_sig_str_landed_leg,0,Compare known complete reconstructed totals only
+Master total reconciliation: b_total_sig_str_landed_distance,0,Compare known complete reconstructed totals only
+Master total reconciliation: b_total_sig_str_landed_clinch,0,Compare known complete reconstructed totals only
+Master total reconciliation: b_total_sig_str_landed_ground,0,Compare known complete reconstructed totals only
+Master total reconciliation: b_total_sig_str_atmp_head,0,Compare known complete reconstructed totals only
+Master total reconciliation: b_total_sig_str_atmp_body,0,Compare known complete reconstructed totals only
+Master total reconciliation: b_total_sig_str_atmp_leg,0,Compare known complete reconstructed totals only
+Master total reconciliation: b_total_sig_str_atmp_distance,0,Compare known complete reconstructed totals only
+Master total reconciliation: b_total_sig_str_atmp_clinch,0,Compare known complete reconstructed totals only
+Master total reconciliation: b_total_sig_str_atmp_ground,0,Compare known complete reconstructed totals only
+Master profile reconciliation: r_fighter_name,0,Source profile join should match master
+Master profile reconciliation: r_fighter_nick_name,0,Source profile join should match master
+Master profile reconciliation: r_height,0,Source profile join should match master
+Master profile reconciliation: r_weight_lbs,0,Source profile join should match master
+Master profile reconciliation: r_reach_inches,0,Source profile join should match master
+Master profile reconciliation: r_stance,0,Source profile join should match master
+Master profile reconciliation: r_dob,0,Source profile join should match master
+Master profile reconciliation: r_slpm,0,Source profile join should match master
+Master profile reconciliation: r_str_acc,0,Source profile join should match master
+Master profile reconciliation: r_sapm,0,Source profile join should match master
+Master profile reconciliation: r_str_def,0,Source profile join should match master
+Master profile reconciliation: r_td_avg,0,Source profile join should match master
+Master profile reconciliation: r_td_acc,0,Source profile join should match master
+Master profile reconciliation: r_td_def,0,Source profile join should match master
+Master profile reconciliation: r_sub_avg,0,Source profile join should match master
+Master profile reconciliation: b_fighter_name,0,Source profile join should match master
+Master profile reconciliation: b_fighter_nick_name,0,Source profile join should match master
+Master profile reconciliation: b_height,0,Source profile join should match master
+Master profile reconciliation: b_weight_lbs,0,Source profile join should match master
+Master profile reconciliation: b_reach_inches,0,Source profile join should match master
+Master profile reconciliation: b_stance,0,Source profile join should match master
+Master profile reconciliation: b_dob,0,Source profile join should match master
+Master profile reconciliation: b_slpm,0,Source profile join should match master
+Master profile reconciliation: b_str_acc,0,Source profile join should match master
+Master profile reconciliation: b_sapm,0,Source profile join should match master
+Master profile reconciliation: b_str_def,0,Source profile join should match master
+Master profile reconciliation: b_td_avg,0,Source profile join should match master
+Master profile reconciliation: b_td_acc,0,Source profile join should match master
+Master profile reconciliation: b_td_def,0,Source profile join should match master
+Master profile reconciliation: b_sub_avg,0,Source profile join should match master
+Unknown UFC round-stat fights,21,Retained with missing totals; biased toward early years
+Noncontiguous partial round sequences,1,Retain; exclude from complete-fight totals
