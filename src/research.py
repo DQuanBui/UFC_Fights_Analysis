@@ -598,6 +598,148 @@ def outcome_questions(data):
     }, questions
 
 
+@chapter("06")
+def round_questions(data):
+    from .statistics import event_bootstrap
+
+    fights, _ = cohort(data)
+    rounds = data["rounds"][data["rounds"].fight_id.isin(fights.fight_id)].copy()
+    exposure = []
+    for schedule, group in fights[fights.standard_format].groupby("scheduled_rounds"):
+        for number in range(1, int(schedule) + 1):
+            reached = group[group.finish_round.ge(number)]
+            seconds = (reached.fight_duration_seconds - 300 * (number - 1)).clip(0, 300)
+            endings = (reached.finish_round.eq(number) & reached.is_finish).sum()
+            exposure.append(
+                dict(
+                    scheduled_rounds=int(schedule),
+                    round=number,
+                    reached=len(reached),
+                    finishes=int(endings),
+                    observed_minutes=seconds.sum() / 60,
+                    finish_risk=endings / len(reached),
+                    finishes_per_100_minutes=endings / (seconds.sum() / 60) * 100,
+                )
+            )
+    exposure = pd.DataFrame(exposure)
+    complete = fights[
+        fights.standard_format
+        & fights.scheduled_rounds.eq(3)
+        & fights.finish_round.ge(3)
+        & fights.round_stats_complete
+    ]
+    early = rounds[
+        rounds.fight_id.isin(complete.fight_id) & rounds.round_no.isin([1, 2])
+    ]
+    paired = early.pivot(
+        index=["fight_id", "fighter_id"], columns="round_no", values="sig_landed"
+    ).dropna()
+    paired["change_per_minute"] = (paired[2] - paired[1]) / 5
+    paired = paired.reset_index().merge(
+        fights[["fight_id", "event_id"]], on="fight_id", validate="many_to_one"
+    )
+    low, high = event_bootstrap(
+        paired.change_per_minute.to_numpy(), paired.event_id.to_numpy()
+    )
+    activity = pd.DataFrame(
+        [
+            dict(
+                fighter_pairs=len(paired),
+                fights=paired.fight_id.nunique(),
+                round1_rate=paired[1].mean() / 5,
+                round2_rate=paired[2].mean() / 5,
+                paired_change=paired.change_per_minute.mean(),
+                event_bootstrap_low=low,
+                event_bootstrap_high=high,
+            )
+        ]
+    )
+    continuing = fights[
+        fights.standard_format
+        & fights.decisive
+        & fights.finish_round.ge(2)
+        & fights.round_stats_complete
+    ]
+    opening = rounds[rounds.round_no.eq(1)].merge(
+        continuing[["fight_id", "r_id", "winner_id", "event_id"]],
+        on="fight_id",
+        validate="many_to_one",
+    )
+    red = opening[opening.fighter_id.eq(opening.r_id)].set_index("fight_id")
+    blue = (
+        opening[opening.fighter_id.ne(opening.r_id)]
+        .set_index("fight_id")
+        .reindex(red.index)
+    )
+    leads = []
+    for metric in ["sig_landed", "td_success", "ctrl_seconds"]:
+        delta = red[metric] - blue[metric]
+        usable = delta.notna() & delta.ne(0)
+        leaders = red.fighter_id.where(delta.gt(0), blue.fighter_id)
+        won = leaders.loc[usable].eq(red.loc[usable, "winner_id"])
+        low, high = wilson_interval(won.sum(), len(won))
+        leads.append(
+            dict(
+                round1_metric=metric,
+                eligible_fights=len(won),
+                leader_wins=won.sum(),
+                leader_win_rate=won.mean(),
+                low=low,
+                high=high,
+                excluded_ties_or_missing=len(red) - len(won),
+            )
+        )
+    leads = pd.DataFrame(leads)
+    control = (
+        rounds.assign(known_control=rounds.ctrl_seconds.notna())
+        .groupby("fight_year")
+        .agg(
+            fighter_rounds=("fight_id", "size"),
+            known_control_share=("known_control", "mean"),
+        )
+        .reset_index()
+    )
+    strike = leads[leads.round1_metric.eq("sig_landed")].iloc[0]
+    recent = control[control.fight_year.ge(2010)]
+    questions = [
+        answer(
+            "Is later-round finishing still lower after accounting for time exposed?",
+            "For standard three-round bouts, finish incidence per 100 observed fight-minutes is "
+            + ", ".join(
+                f"round {int(r['round'])}: {r['finishes_per_100_minutes']:.2f}"
+                for _, r in exposure[exposure.scheduled_rounds.eq(3)].iterrows()
+            )
+            + ".",
+            "Incidence uses actual elapsed exposure, while conditional risk uses fights reaching the round. Neither removes survivor selection or gives an individual instantaneous hazard.",
+            "deep_round_exposure",
+        ),
+        answer(
+            "Do the same fighters change striking pace between full rounds?",
+            f"Among {paired.fight_id.nunique():,} standard three-round bouts reaching round 3, round-2 striking changes by {activity.paired_change.iloc[0]:+.3f} landed strikes per minute versus round 1 (event-bootstrap interval {activity.event_bootstrap_low.iloc[0]:+.3f} to {activity.event_bootstrap_high.iloc[0]:+.3f}).",
+            "Both rounds are full five-minute exposures for the same fighter-bouts. This removes between-round composition differences but restricts the conclusion to bouts surviving two rounds.",
+            "deep_paired_round_pace",
+        ),
+        answer(
+            "How informative is leading the first round when the fight continues?",
+            f"The first-round significant-strike leader wins {strike.leader_win_rate:.1%} of {int(strike.eligible_fights):,} eligible continuing bouts.",
+            "This is a within-fight descriptive association, not a pre-fight model feature or a claim about judges awarding round 1. Ties and missing measures are excluded separately for each metric.",
+            "deep_opening_round_leads",
+        ),
+        answer(
+            "Can control-time trends be compared throughout UFC history?",
+            f"Annual known-control coverage spans {control.known_control_share.min():.1%}-{control.known_control_share.max():.1%}; from 2010 onward the minimum is {recent.known_control_share.min():.1%}.",
+            "Missing historical control is not evidence that fighters did not control opponents. Restrict comparisons to years with adequate coverage and show observation counts.",
+            "deep_control_coverage",
+        ),
+    ]
+    return {
+        "deep_round_exposure": exposure,
+        "deep_paired_round_pace": activity,
+        "deep_opening_round_leads": leads,
+        "deep_control_coverage": control,
+    }, questions
+
+
 def run_chapter(number, data=None):
     if data is None:
         from .pipeline import prepare

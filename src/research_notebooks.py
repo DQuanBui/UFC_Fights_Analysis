@@ -8,6 +8,15 @@ from .data_loader import ROOT
 from .notebooks import execute_notebooks
 
 SECTIONS = {
+    "06": (
+        "What changes within fights after accounting for exposure and survival?",
+        [
+            "deep_round_exposure",
+            "deep_paired_round_pace",
+            "deep_opening_round_leads",
+            "deep_control_coverage",
+        ],
+    ),
     "05": (
         "Can composition, schedules and rematches explain outcomes?",
         [

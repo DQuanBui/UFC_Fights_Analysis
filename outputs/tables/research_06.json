@@ -1,0 +1,26 @@
+[
+  {
+    "question": "Is later-round finishing still lower after accounting for time exposed?",
+    "answer": "For standard three-round bouts, finish incidence per 100 observed fight-minutes is round 1: 6.16, round 2: 4.94, round 3: 2.90.",
+    "interpretation": "Incidence uses actual elapsed exposure, while conditional risk uses fights reaching the round. Neither removes survivor selection or gives an individual instantaneous hazard.",
+    "table": "deep_round_exposure"
+  },
+  {
+    "question": "Do the same fighters change striking pace between full rounds?",
+    "answer": "Among 4,361 standard three-round bouts reaching round 3, round-2 striking changes by +0.306 landed strikes per minute versus round 1 (event-bootstrap interval +0.254 to +0.358).",
+    "interpretation": "Both rounds are full five-minute exposures for the same fighter-bouts. This removes between-round composition differences but restricts the conclusion to bouts surviving two rounds.",
+    "table": "deep_paired_round_pace"
+  },
+  {
+    "question": "How informative is leading the first round when the fight continues?",
+    "answer": "The first-round significant-strike leader wins 67.2% of 5,857 eligible continuing bouts.",
+    "interpretation": "This is a within-fight descriptive association, not a pre-fight model feature or a claim about judges awarding round 1. Ties and missing measures are excluded separately for each metric.",
+    "table": "deep_opening_round_leads"
+  },
+  {
+    "question": "Can control-time trends be compared throughout UFC history?",
+    "answer": "Annual known-control coverage spans 0.0%-100.0%; from 2010 onward the minimum is 100.0%.",
+    "interpretation": "Missing historical control is not evidence that fighters did not control opponents. Restrict comparisons to years with adequate coverage and show observation counts.",
+    "table": "deep_control_coverage"
+  }
+]
