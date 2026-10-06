@@ -8,6 +8,15 @@ from .data_loader import ROOT
 from .notebooks import execute_notebooks
 
 SECTIONS = {
+    "04": (
+        "What do rankings, debut matchups and early careers really reveal?",
+        [
+            "deep_ranking_stability",
+            "deep_debut_matchups",
+            "deep_age_gap",
+            "deep_career_continuation",
+        ],
+    ),
     "03": (
         "What drives growth, geographic spread and fighter turnover?",
         [

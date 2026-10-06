@@ -1,0 +1,26 @@
+[
+  {
+    "question": "How certain are the highest win-rate rankings?",
+    "answer": "With a 10-decisive-fight minimum, Khabib Nurmagomedov leads at 13/13 (100.0%); the descriptive Wilson interval is 77.2%-100.0%.",
+    "interpretation": "The table shows how leaders change at 5, 10 and 20 fights. Intervals overlap and ignore opponent quality and athlete dependence; the ranking is not a definitive skill ordering.",
+    "table": "deep_ranking_stability"
+  },
+  {
+    "question": "How do UFC newcomers fare against established UFC opponents?",
+    "answer": "In 512 decisive matchups since 2000 with exactly one newcomer and an opponent with at least five prior UFC bouts, the newcomer wins 43.2%.",
+    "interpretation": "Prior UFC experience is measured before the date. Newcomers may have extensive experience elsewhere, and matchmaking is selective.",
+    "table": "deep_debut_matchups"
+  },
+  {
+    "question": "Does the age association strengthen as the age gap widens?",
+    "answer": "Younger-fighter win shares range from 52.3% to 69.2% across the four unequal-age bands shown below.",
+    "interpretation": "Compare the bands and their sample sizes rather than assuming a linear age effect. Equal-age and missing-DOB bouts are excluded.",
+    "table": "deep_age_gap"
+  },
+  {
+    "question": "Is a successful UFC debut associated with more early opportunities?",
+    "answer": "Among debutants with 730 observable follow-up days, 88.4% of debut winners and 52.2% of debut losers reach three observed UFC bouts within that window.",
+    "interpretation": "Every entrant has the same follow-up horizon. This is observed participation, not a retention contract or causal effect; recent censored entrants and ambiguous same-day debuts are excluded.",
+    "table": "deep_career_continuation"
+  }
+]

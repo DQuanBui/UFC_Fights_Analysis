@@ -376,6 +376,115 @@ def growth_drivers(data):
     }, questions
 
 
+@chapter("04")
+def career_questions(data):
+    fights, appearances = cohort(data)
+    decisive = appearances[appearances.decisive].copy()
+    record = binomial_summary(decisive, ["fighter_id", "fighter_name"], "won")
+    leaders = []
+    for minimum in [5, 10, 20]:
+        group = (
+            record[record.n.ge(minimum)]
+            .sort_values(["rate", "n"], ascending=False)
+            .head(10)
+            .copy()
+        )
+        group["minimum_decisive_fights"] = minimum
+        leaders.append(group)
+    leaders = pd.concat(leaders, ignore_index=True)
+    rows = fights[fights.decisive & fights.fight_year.ge(2000)].copy()
+    rookie_r = rows.r_prior_ufc_fights.eq(0) & rows.b_prior_ufc_fights.ge(5)
+    rookie_b = rows.b_prior_ufc_fights.eq(0) & rows.r_prior_ufc_fights.ge(5)
+    matchups = rows[rookie_r | rookie_b].copy()
+    matchups["debutant_won"] = matchups.winner_id.eq(
+        matchups.r_id.where(rookie_r, matchups.b_id)
+    )
+    matchups["period"] = np.where(
+        matchups.fight_year.lt(2010),
+        "2000-2009",
+        np.where(matchups.fight_year.lt(2020), "2010-2019", "2020-2026"),
+    )
+    debut = binomial_summary(matchups, "period", "debutant_won")
+    age = fights[
+        fights.decisive & fights.age_difference.notna() & fights.age_difference.ne(0)
+    ].copy()
+    age["age_gap"] = pd.cut(
+        age.age_difference.abs(), [0, 2, 5, 10, 65], include_lowest=True
+    )
+    age["younger_won"] = age.winner_id.eq(
+        age.r_id.where(age.age_difference.lt(0), age.b_id)
+    )
+    age = binomial_summary(age, "age_gap", "younger_won")
+    all_ufc = (
+        data["appearances"].query("is_ufc").sort_values(["event_date", "fight_id"])
+    )
+    end = fights.event_date.max()
+    careers = []
+    for fid, group in all_ufc.groupby("fighter_id"):
+        date = group.event_date.min()
+        opening = group[group.event_date.eq(date)]
+        if (
+            date.year < 2000
+            or date > end - pd.Timedelta(days=730)
+            or len(opening) != 1
+            or not opening.decisive.iloc[0]
+        ):
+            continue
+        window = group[group.event_date.le(date + pd.Timedelta(days=730))]
+        careers.append(
+            dict(
+                fighter_id=fid,
+                debut_date=date,
+                debut_win=bool(opening.won.iloc[0]),
+                fights_within_730_days=len(window),
+                reached_three_fights=len(window) >= 3,
+            )
+        )
+    careers = pd.DataFrame(careers)
+    continuation = binomial_summary(careers, "debut_win", "reached_three_fights")
+    continuation["mean_fights"] = (
+        careers.groupby("debut_win")
+        .fights_within_730_days.mean()
+        .reindex(continuation.debut_win)
+        .to_numpy()
+    )
+    top = record[record.n.ge(10)].sort_values(["rate", "n"], ascending=False).iloc[0]
+    rate = matchups.debutant_won.mean()
+    questions = [
+        answer(
+            "How certain are the highest win-rate rankings?",
+            f"With a 10-decisive-fight minimum, {top.fighter_name} leads at {int(top.successes)}/{int(top.n)} ({top.rate:.1%}); the descriptive Wilson interval is {top.low:.1%}-{top.high:.1%}.",
+            "The table shows how leaders change at 5, 10 and 20 fights. Intervals overlap and ignore opponent quality and athlete dependence; the ranking is not a definitive skill ordering.",
+            "deep_ranking_stability",
+        ),
+        answer(
+            "How do UFC newcomers fare against established UFC opponents?",
+            f"In {len(matchups):,} decisive matchups since 2000 with exactly one newcomer and an opponent with at least five prior UFC bouts, the newcomer wins {rate:.1%}.",
+            "Prior UFC experience is measured before the date. Newcomers may have extensive experience elsewhere, and matchmaking is selective.",
+            "deep_debut_matchups",
+        ),
+        answer(
+            "Does the age association strengthen as the age gap widens?",
+            f"Younger-fighter win shares range from {age.rate.min():.1%} to {age.rate.max():.1%} across the four unequal-age bands shown below.",
+            "Compare the bands and their sample sizes rather than assuming a linear age effect. Equal-age and missing-DOB bouts are excluded.",
+            "deep_age_gap",
+        ),
+        answer(
+            "Is a successful UFC debut associated with more early opportunities?",
+            f"Among debutants with 730 observable follow-up days, {continuation.loc[continuation.debut_win, 'rate'].iloc[0]:.1%} of debut winners and {continuation.loc[~continuation.debut_win, 'rate'].iloc[0]:.1%} of debut losers reach three observed UFC bouts within that window.",
+            "Every entrant has the same follow-up horizon. This is observed participation, not a retention contract or causal effect; recent censored entrants and ambiguous same-day debuts are excluded.",
+            "deep_career_continuation",
+        ),
+    ]
+    return {
+        "deep_ranking_stability": leaders,
+        "deep_debut_matchups": debut,
+        "deep_age_gap": age,
+        "deep_career_continuation": continuation,
+        "deep_career_followup": careers,
+    }, questions
+
+
 def run_chapter(number, data=None):
     if data is None:
         from .pipeline import prepare
