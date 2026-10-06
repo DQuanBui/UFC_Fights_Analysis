@@ -8,6 +8,14 @@ from .data_loader import ROOT
 from .notebooks import execute_notebooks
 
 SECTIONS = {
+    "09": (
+        "How do bonus era and award category change the interpretation?",
+        [
+            "deep_bonus_eras",
+            "deep_bonus_categories",
+            "deep_bonus_division_standardization",
+        ],
+    ),
     "08": (
         "Which features help, when does the model fail, and how robust is its lift?",
         [
@@ -99,10 +107,13 @@ def cells_for(number):
         cells.append(nbformat.v4.new_code_cell(f"display(deep_tables['{name}'])"))
     for cell in cells:
         cell.metadata["tags"] = ["research-extension"]
+    if number == "06":
+        cells.extend(cells_for("09"))
     return cells
 
 
 def update(number, execute=True):
+    number = "06" if number == "09" else number
     path = next((ROOT / "notebooks").glob(number + "_*.ipynb"))
     notebook = nbformat.read(path, 4)
     notebook.cells = [

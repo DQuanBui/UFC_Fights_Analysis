@@ -956,6 +956,75 @@ def model_robustness(data):
     }, questions
 
 
+@chapter("09")
+def bonus_eras(data):
+    fights, _ = cohort(data)
+    fights = fights[fights.fight_year.between(2006, 2025)].copy()
+    fights["era"] = pd.cut(
+        fights.fight_year,
+        [2005, 2013, 2019, 2025],
+        labels=["2006-2013", "2014-2019", "2020-2025"],
+    )
+    fights["outcome"] = np.select(
+        [fights.is_finish, fights.is_decision], ["Finish", "Decision"], default="Other"
+    )
+    bonuses = data["bonuses"]
+    fights["decorated"] = fights.fight_id.isin(bonuses.fight_id)
+    era = binomial_summary(fights, ["era", "outcome"], "decorated")
+    category_frames = []
+    modern = fights[fights.fight_year.ge(2015)].copy()
+    for category in ["Fight of the Night", "Performance of the Night"]:
+        modern["decorated"] = modern.fight_id.isin(
+            bonuses.loc[bonuses.bonus_type.eq(category), "fight_id"]
+        )
+        table = binomial_summary(modern, ["outcome"], "decorated")
+        table["category"] = category
+        category_frames.append(table)
+    categories = pd.concat(category_frames, ignore_index=True)
+    modern["decorated"] = modern.fight_id.isin(bonuses.fight_id)
+    divisions = binomial_summary(
+        modern[modern.outcome.ne("Other")], ["weight_class", "outcome"], "decorated"
+    )
+    counts = divisions.pivot(index="weight_class", columns="outcome", values="n")
+    shared = counts.index[counts[["Finish", "Decision"]].ge(50).all(axis=1)]
+    divisions = divisions[divisions.weight_class.isin(shared)].copy()
+    weights = counts.loc[shared].sum(axis=1)
+    weights = weights / weights.sum()
+    divisions["pooled_weight"] = divisions.weight_class.map(weights)
+    standardized = (
+        divisions.assign(weighted_rate=divisions.rate * divisions.pooled_weight)
+        .groupby("outcome")
+        .weighted_rate.sum()
+    )
+    recent = era[era.era.eq("2020-2025")].set_index("outcome")
+    fotn = categories[categories.category.eq("Fight of the Night")].set_index("outcome")
+    questions = [
+        answer(
+            "Is the finish-bonus association still present within recent years?",
+            f"In 2020-2025, {recent.loc['Finish', 'rate']:.1%} of {int(recent.loc['Finish', 'n']):,} finishes and {recent.loc['Decision', 'rate']:.1%} of {int(recent.loc['Decision', 'n']):,} decisions have at least one recorded bonus category.",
+            "Comparisons start in 2006, the first observed bonus year, and exclude partial 2026. Recorded absence is treated as no bonus; source completeness is not independently verified. Eras reflect observed category coverage, not a causal policy experiment.",
+            "deep_bonus_eras",
+        ),
+        answer(
+            "Do Fight of the Night and performance awards tell the same story?",
+            f"Across 2015-2025, Fight of the Night decorates {fotn.loc['Finish', 'rate']:.1%} of finishes and {fotn.loc['Decision', 'rate']:.1%} of decisions. The category table separates this from performance awards.",
+            "2014 is omitted as a transition year in the source categories. A fight can have multiple categories. Records identify decorated fights, not recipient identities or award money.",
+            "deep_bonus_categories",
+        ),
+        answer(
+            "Can division composition alone explain the modern finish-bonus gap?",
+            f"Across {len(shared)} shared divisions with at least 50 finishes and 50 decisions each, pooled division weights give {standardized['Finish']:.1%} for finishes versus {standardized['Decision']:.1%} for decisions: a {(standardized['Finish'] - standardized['Decision']) * 100:.2f}-point gap.",
+            "Both outcomes use the same pooled division weights in 2015-2025. This removes that composition difference only; opponent quality, card prominence and discretionary selection remain unmeasured.",
+            "deep_bonus_division_standardization",
+        ),
+    ]
+    return {
+        "deep_bonus_eras": era,
+        "deep_bonus_categories": categories,
+        "deep_bonus_division_standardization": divisions,
+    }, questions
+
+
 def run_chapter(number, data=None):
     if data is None:
         from .pipeline import prepare

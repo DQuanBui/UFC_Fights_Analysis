@@ -1,0 +1,20 @@
+[
+  {
+    "question": "Is the finish-bonus association still present within recent years?",
+    "answer": "In 2020-2025, 50.9% of 1,485 finishes and 8.5% of 1,484 decisions have at least one recorded bonus category.",
+    "interpretation": "Comparisons start in 2006, the first observed bonus year, and exclude partial 2026. Recorded absence is treated as no bonus; source completeness is not independently verified. Eras reflect observed category coverage, not a causal policy experiment.",
+    "table": "deep_bonus_eras"
+  },
+  {
+    "question": "Do Fight of the Night and performance awards tell the same story?",
+    "answer": "Across 2015-2025, Fight of the Night decorates 5.0% of finishes and 7.8% of decisions. The category table separates this from performance awards.",
+    "interpretation": "2014 is omitted as a transition year in the source categories. A fight can have multiple categories. Records identify decorated fights, not recipient identities or award money.",
+    "table": "deep_bonus_categories"
+  },
+  {
+    "question": "Can division composition alone explain the modern finish-bonus gap?",
+    "answer": "Across 11 shared divisions with at least 50 finishes and 50 decisions each, pooled division weights give 48.1% for finishes versus 8.4% for decisions: a 39.71-point gap.",
+    "interpretation": "Both outcomes use the same pooled division weights in 2015-2025. This removes that composition difference only; opponent quality, card prominence and discretionary selection remain unmeasured.",
+    "table": "deep_bonus_division_standardization"
+  }
+]
