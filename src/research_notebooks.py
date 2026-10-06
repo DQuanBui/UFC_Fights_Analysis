@@ -8,6 +8,15 @@ from .data_loader import ROOT
 from .notebooks import execute_notebooks
 
 SECTIONS = {
+    "02": (
+        "How sensitive are the results to cleaning and metric definitions?",
+        [
+            "deep_timing_sensitivity",
+            "deep_cohort_sensitivity",
+            "deep_rate_weighting",
+            "deep_zero_attempts",
+        ],
+    ),
     "01": (
         "Where can the dataset mislead us?",
         [
@@ -16,7 +25,7 @@ SECTIONS = {
             "deep_missing_selection",
             "deep_zero_bias",
         ],
-    )
+    ),
 }
 
 

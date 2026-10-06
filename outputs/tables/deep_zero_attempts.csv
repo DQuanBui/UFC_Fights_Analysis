@@ -1,0 +1,17 @@
+weight_class,appearances,no_strike_attempts,no_takedown_attempts,mean_observed_td_accuracy
+Bantamweight,1588,4,501,0.36888248766902837
+Catch Weight,164,1,56,0.47504041740152847
+Featherweight,1754,3,604,0.404208398517323
+Flyweight,848,0,217,0.3876934717104089
+Heavyweight,1568,20,742,0.4116189203434689
+Light Heavyweight,1538,9,631,0.37867235073292366
+Lightweight,2944,11,957,0.40122658090426333
+Middleweight,2320,9,866,0.40792068428548023
+Open Weight,212,25,83,0.5983164983164984
+Other / unspecified,20,0,10,0.51
+Super Heavyweight,2,0,0,0.7
+Welterweight,2820,13,915,0.40960579233106315
+Women's Bantamweight,500,1,161,0.43129244524214255
+Women's Featherweight,60,0,19,0.3335315091412652
+Women's Flyweight,554,1,158,0.4333123456229517
+Women's Strawweight,748,0,207,0.41304355023638484

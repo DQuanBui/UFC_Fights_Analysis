@@ -1,0 +1,26 @@
+[
+  {
+    "question": "How many UFC durations would a universal five-minute formula misstate?",
+    "answer": "29 fights have different durations under the naive formula; the largest error is 1560 seconds.",
+    "interpretation": "Historical schedules require their documented round lengths. The schedule-specific audit shows which eras and formats are affected.",
+    "table": "deep_timing_sensitivity"
+  },
+  {
+    "question": "Does excluding unresolved outcomes change the headline finish rate?",
+    "answer": "Restricting to decisive fights changes the finish share by +0.94 percentage points, from 52.19% to 53.13%.",
+    "interpretation": "Both denominators can answer a question, but they cannot share the same label. Reporting only complete statistics also changes the cohort.",
+    "table": "deep_cohort_sensitivity"
+  },
+  {
+    "question": "Are average fight rates interchangeable with exposure-weighted rates?",
+    "answer": "Among divisions with at least 100 fighter-fights, Open Weight has the largest positive gap: 2.62 versus 1.24 significant strikes per minute.",
+    "interpretation": "Equal-fight averages give a very short bout the same weight as a full decision. Exposure-weighted rates estimate production per observed minute. Neither should be presented as the other.",
+    "table": "deep_rate_weighting"
+  },
+  {
+    "question": "Should a fight with no takedown attempts have zero takedown accuracy?",
+    "answer": "6,127 fighter-fight records have zero takedown attempts.",
+    "interpretation": "Accuracy is undefined with zero attempts. Filling it with zero would mix tactical non-participation with failed attempts.",
+    "table": "deep_zero_attempts"
+  }
+]

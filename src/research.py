@@ -146,6 +146,117 @@ def source_bias(data):
     }, questions
 
 
+@chapter("02")
+def cleaning_sensitivity(data):
+    """How do timing conventions, scope and denominator rules change answers?"""
+    from .cleaning import parse_clock
+
+    fights, appearances = cohort(data)
+    naive = (fights.finish_round - 1) * 300 + fights.finish_time.map(parse_clock)
+    timing = fights[["time_format", "fight_duration_seconds"]].copy()
+    timing["naive_seconds"] = naive
+    timing["absolute_error"] = abs(naive - timing.fight_duration_seconds)
+    timing = (
+        timing.groupby("time_format")
+        .agg(
+            fights=("absolute_error", "size"),
+            affected=("absolute_error", lambda s: s.gt(0).sum()),
+            mean_error_seconds=("absolute_error", "mean"),
+            maximum_error_seconds=("absolute_error", "max"),
+        )
+        .reset_index()
+    )
+    variants = []
+    for name, rows in [
+        ("All scoped fights", fights),
+        ("Decisive fights only", fights[fights.decisive]),
+        ("Complete statistics only", fights[fights.round_stats_complete]),
+        ("Standard schedules only", fights[fights.standard_format]),
+        (
+            "2000-2025 complete calendar years",
+            fights[fights.fight_year.between(2000, 2025)],
+        ),
+    ]:
+        variants.append(
+            dict(
+                definition=name,
+                fights=len(rows),
+                finish_rate=rows.is_finish.mean(),
+                decision_rate=rows.is_decision.mean(),
+                duration_minutes=rows.fight_duration_seconds.mean() / 60,
+            )
+        )
+    variants = pd.DataFrame(variants)
+    observed = appearances[
+        appearances.sig_landed.notna() & appearances.fight_duration_seconds.gt(0)
+    ]
+    rates = (
+        observed.groupby("weight_class")
+        .apply(
+            lambda rows: pd.Series(
+                dict(
+                    fighter_fights=len(rows),
+                    equal_fight_weighted_rate=rows.sig_per_minute.mean(),
+                    exposure_weighted_rate=rows.sig_landed.sum()
+                    / (rows.fight_duration_seconds.sum() / 60),
+                )
+            ),
+            include_groups=False,
+        )
+        .reset_index()
+    )
+    rates["difference"] = rates.equal_fight_weighted_rate - rates.exposure_weighted_rate
+    zero_attempts = (
+        appearances.groupby("weight_class")
+        .agg(
+            appearances=("fight_id", "size"),
+            no_strike_attempts=("sig_atmp", lambda s: s.eq(0).sum()),
+            no_takedown_attempts=("td_atmp", lambda s: s.eq(0).sum()),
+            mean_observed_td_accuracy=("td_accuracy", "mean"),
+        )
+        .reset_index()
+    )
+    corrected = int(timing.affected.sum())
+    gap = (variants.iloc[1].finish_rate - variants.iloc[0].finish_rate) * 100
+    eligible = (
+        rates[rates.fighter_fights.ge(100)]
+        .sort_values("difference", ascending=False)
+        .iloc[0]
+    )
+    questions = [
+        answer(
+            "How many UFC durations would a universal five-minute formula misstate?",
+            f"{corrected} fights have different durations under the naive formula; the largest error is {timing.maximum_error_seconds.max():.0f} seconds.",
+            "Historical schedules require their documented round lengths. The schedule-specific audit shows which eras and formats are affected.",
+            "deep_timing_sensitivity",
+        ),
+        answer(
+            "Does excluding unresolved outcomes change the headline finish rate?",
+            f"Restricting to decisive fights changes the finish share by {gap:+.2f} percentage points, from {variants.iloc[0].finish_rate:.2%} to {variants.iloc[1].finish_rate:.2%}.",
+            "Both denominators can answer a question, but they cannot share the same label. Reporting only complete statistics also changes the cohort.",
+            "deep_cohort_sensitivity",
+        ),
+        answer(
+            "Are average fight rates interchangeable with exposure-weighted rates?",
+            f"Among divisions with at least 100 fighter-fights, {eligible.weight_class} has the largest positive gap: {eligible.equal_fight_weighted_rate:.2f} versus {eligible.exposure_weighted_rate:.2f} significant strikes per minute.",
+            "Equal-fight averages give a very short bout the same weight as a full decision. Exposure-weighted rates estimate production per observed minute. Neither should be presented as the other.",
+            "deep_rate_weighting",
+        ),
+        answer(
+            "Should a fight with no takedown attempts have zero takedown accuracy?",
+            f"{int(zero_attempts.no_takedown_attempts.sum()):,} fighter-fight records have zero takedown attempts.",
+            "Accuracy is undefined with zero attempts. Filling it with zero would mix tactical non-participation with failed attempts.",
+            "deep_zero_attempts",
+        ),
+    ]
+    return {
+        "deep_timing_sensitivity": timing,
+        "deep_cohort_sensitivity": variants,
+        "deep_rate_weighting": rates,
+        "deep_zero_attempts": zero_attempts,
+    }, questions
+
+
 def run_chapter(number, data=None):
     if data is None:
         from .pipeline import prepare
