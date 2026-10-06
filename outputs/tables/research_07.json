@@ -1,0 +1,26 @@
+[
+  {
+    "question": "Does the reach association survive adjustment for other fighter characteristics?",
+    "answer": "On the same 7,195 complete-case bouts, the crude odds ratio per additional 2 inches of reach is 1.079; the adjusted ratio is 1.066 (250-event-bootstrap 95% interval 1.031-1.105).",
+    "interpretation": "The exploratory logistic model includes age, height and prior UFC experience differences plus division and decade indicators. Measurements are snapshot traits; missingness, matchup quality and recurring fighters prevent a causal interpretation. Odds ratios are not percentage-point changes.",
+    "table": "deep_adjusted_attributes"
+  },
+  {
+    "question": "Does age still have an association after allowing for UFC experience?",
+    "answer": "A five-year age difference has adjusted odds ratio 0.711 (interval 0.674-0.748) for the older fighter, holding the included covariates fixed.",
+    "interpretation": "Age and experience are not interchangeable. Linear log-odds, selected complete cases, mild numerical regularization (C=1,000,000) and residual confounding limit the result.",
+    "table": "deep_adjusted_attributes"
+  },
+  {
+    "question": "How much of the height-reach correlation reflects different divisions?",
+    "answer": "Among 2,079 unique fighters, pooled Pearson correlation is 0.891; after removing modal-division means it is 0.635.",
+    "interpretation": "Each fighter appears once and is assigned their most-observed division. The residual correlation measures within-group linear association; athletes competing in multiple divisions make this grouping approximate.",
+    "table": "deep_within_division_correlation"
+  },
+  {
+    "question": "What happens when comparing reach among similarly aged opponents?",
+    "answer": "For opponents within two years of age, the longer-reach fighter wins 52.2% across 1,968 bouts.",
+    "interpretation": "An age caliper is a transparent sensitivity check, not full matching. It changes the eligible population and still leaves division, skill and height differences.",
+    "table": "deep_reach_age_caliper"
+  }
+]

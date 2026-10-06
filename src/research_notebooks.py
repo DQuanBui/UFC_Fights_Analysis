@@ -8,6 +8,14 @@ from .data_loader import ROOT
 from .notebooks import execute_notebooks
 
 SECTIONS = {
+    "07": (
+        "Which physical associations survive adjustment and sensitivity checks?",
+        [
+            "deep_adjusted_attributes",
+            "deep_within_division_correlation",
+            "deep_reach_age_caliper",
+        ],
+    ),
     "06": (
         "What changes within fights after accounting for exposure and survival?",
         [

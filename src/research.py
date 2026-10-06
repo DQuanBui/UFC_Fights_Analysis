@@ -740,6 +740,162 @@ def round_questions(data):
     }, questions
 
 
+@chapter("07")
+def adjusted_associations(data):
+    from scipy.stats import pearsonr
+    from sklearn.linear_model import LogisticRegression
+
+    from .modeling import model_frame
+
+    fights, appearances = cohort(data)
+    frame = model_frame(data["fights"])
+    frame = frame[frame.fight_year.between(2000, 2025)].copy()
+    extras = fights.set_index("fight_id")
+    sign = np.where(frame.source_red_is_a, 1, -1)
+    frame["reach_2in"] = (
+        extras.loc[frame.fight_id, "reach_inches_difference"].to_numpy() * sign / 2
+    )
+    frame["height_2in"] = (
+        extras.loc[frame.fight_id, "height_inches_difference"].to_numpy() * sign / 2
+    )
+    frame["age_5yr"] = frame.age_diff / 5
+    frame["experience_5fights"] = frame.prior_ufc_fights_diff / 5
+    variables = ["age_5yr", "height_2in", "reach_2in", "experience_5fights"]
+    before = len(frame)
+    frame = frame.dropna(subset=variables)
+    adequate = frame.weight_class.value_counts().loc[lambda x: x.ge(100)].index
+    frame = frame[frame.weight_class.isin(adequate)].copy()
+    frame["period"] = (frame.fight_year // 10).astype(str)
+    design = pd.concat(
+        [
+            frame[variables],
+            pd.get_dummies(
+                frame[["weight_class", "period"]], drop_first=True, dtype=float
+            ),
+        ],
+        axis=1,
+    )
+    model = LogisticRegression(C=1e6, max_iter=1000, tol=1e-7)
+    model.fit(design, frame.a_won)
+    estimates = model.coef_[0][: len(variables)]
+    codes, events = pd.factorize(frame.event_id)
+    rng = np.random.default_rng(42)
+    sampled = []
+    for _ in range(250):
+        event_counts = rng.multinomial(
+            len(events), np.full(len(events), 1 / len(events))
+        )
+        model.fit(design, frame.a_won, sample_weight=event_counts[codes])
+        sampled.append(model.coef_[0][: len(variables)])
+    low, high = np.quantile(np.asarray(sampled), [0.025, 0.975], axis=0)
+    adjusted = pd.DataFrame(
+        {
+            "feature": variables,
+            "log_odds_coefficient": estimates,
+            "odds_ratio": np.exp(estimates),
+            "event_bootstrap_low": np.exp(low),
+            "event_bootstrap_high": np.exp(high),
+            "fights": len(frame),
+            "excluded_from_initial_window": before - len(frame),
+        }
+    )
+    crude = LogisticRegression(C=1e6, max_iter=1000, tol=1e-7).fit(
+        frame[["reach_2in"]], frame.a_won
+    )
+    adjusted["bootstrap_repetitions"] = 250
+    reach = adjusted[adjusted.feature.eq("reach_2in")].iloc[0]
+    mode = (
+        appearances.groupby(["fighter_id", "weight_class"])
+        .size()
+        .rename("bouts")
+        .reset_index()
+        .sort_values(
+            ["fighter_id", "bouts", "weight_class"], ascending=[True, False, True]
+        )
+        .drop_duplicates("fighter_id")
+    )
+    physical = (
+        appearances.drop_duplicates("fighter_id")[
+            ["fighter_id", "height_inches", "reach_inches"]
+        ]
+        .merge(
+            mode[["fighter_id", "weight_class"]], on="fighter_id", validate="one_to_one"
+        )
+        .dropna()
+    )
+    demeaned = physical[["height_inches", "reach_inches"]] - physical.groupby(
+        "weight_class"
+    )[["height_inches", "reach_inches"]].transform("mean")
+    correlation = pd.DataFrame(
+        [
+            dict(
+                fighters=len(physical),
+                pooled_correlation=pearsonr(
+                    physical.height_inches, physical.reach_inches
+                ).statistic,
+                within_modal_division_correlation=pearsonr(
+                    demeaned.height_inches, demeaned.reach_inches
+                ).statistic,
+            )
+        ]
+    )
+    sensitivity = []
+    for max_gap in [2, 5, 65]:
+        subset = fights[
+            fights.decisive
+            & fights.reach_inches_difference.notna()
+            & fights.reach_inches_difference.ne(0)
+            & fights.age_difference.notna()
+            & fights.age_difference.abs().le(max_gap)
+        ]
+        won = subset.winner_id.eq(
+            subset.r_id.where(subset.reach_inches_difference.gt(0), subset.b_id)
+        )
+        interval_low, interval_high = wilson_interval(won.sum(), len(won))
+        sensitivity.append(
+            dict(
+                maximum_age_gap=max_gap,
+                fights=len(won),
+                longer_reach_win_rate=won.mean(),
+                low=interval_low,
+                high=interval_high,
+            )
+        )
+    sensitivity = pd.DataFrame(sensitivity)
+    age = adjusted[adjusted.feature.eq("age_5yr")].iloc[0]
+    questions = [
+        answer(
+            "Does the reach association survive adjustment for other fighter characteristics?",
+            f"On the same {len(frame):,} complete-case bouts, the crude odds ratio per additional 2 inches of reach is {np.exp(crude.coef_[0, 0]):.3f}; the adjusted ratio is {reach.odds_ratio:.3f} (250-event-bootstrap 95% interval {reach.event_bootstrap_low:.3f}-{reach.event_bootstrap_high:.3f}).",
+            "The exploratory logistic model includes age, height and prior UFC experience differences plus division and decade indicators. Measurements are snapshot traits; missingness, matchup quality and recurring fighters prevent a causal interpretation. Odds ratios are not percentage-point changes.",
+            "deep_adjusted_attributes",
+        ),
+        answer(
+            "Does age still have an association after allowing for UFC experience?",
+            f"A five-year age difference has adjusted odds ratio {age.odds_ratio:.3f} (interval {age.event_bootstrap_low:.3f}-{age.event_bootstrap_high:.3f}) for the older fighter, holding the included covariates fixed.",
+            "Age and experience are not interchangeable. Linear log-odds, selected complete cases, mild numerical regularization (C=1,000,000) and residual confounding limit the result.",
+            "deep_adjusted_attributes",
+        ),
+        answer(
+            "How much of the height-reach correlation reflects different divisions?",
+            f"Among {len(physical):,} unique fighters, pooled Pearson correlation is {correlation.pooled_correlation.iloc[0]:.3f}; after removing modal-division means it is {correlation.within_modal_division_correlation.iloc[0]:.3f}.",
+            "Each fighter appears once and is assigned their most-observed division. The residual correlation measures within-group linear association; athletes competing in multiple divisions make this grouping approximate.",
+            "deep_within_division_correlation",
+        ),
+        answer(
+            "What happens when comparing reach among similarly aged opponents?",
+            f"For opponents within two years of age, the longer-reach fighter wins {sensitivity.iloc[0].longer_reach_win_rate:.1%} across {int(sensitivity.iloc[0].fights):,} bouts.",
+            "An age caliper is a transparent sensitivity check, not full matching. It changes the eligible population and still leaves division, skill and height differences.",
+            "deep_reach_age_caliper",
+        ),
+    ]
+    return {
+        "deep_adjusted_attributes": adjusted,
+        "deep_within_division_correlation": correlation,
+        "deep_reach_age_caliper": sensitivity,
+    }, questions
+
+
 def run_chapter(number, data=None):
     if data is None:
         from .pipeline import prepare
