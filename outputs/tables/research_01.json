@@ -1,0 +1,20 @@
+[
+  {
+    "question": "How much would using the complete master change the UFC population?",
+    "answer": "It would add 2,621 fights (22.9% of all source fights) beyond the 8,820-fight reporting cohort.",
+    "interpretation": "This is a scope mismatch, not additional UFC coverage. Non-UFC results must not enter UFC counts or prior-UFC records.",
+    "table": "deep_scope_bias"
+  },
+  {
+    "question": "Are missing round statistics a random subset of UFC fights?",
+    "answer": "21 scoped fights lack statistics; their mean event year is 1996.0.",
+    "interpretation": "Coverage differs historically. Modern activity cannot be fairly compared with early raw totals without displaying observation rates.",
+    "table": "deep_missing_selection"
+  },
+  {
+    "question": "How much does zero-filling missing fights change average striking totals?",
+    "answer": "The source master gives 73.89 combined significant strikes per scoped fight; the complete observed subset gives 74.06.",
+    "interpretation": "The aggregate difference is small because scoped missingness is rare, but early-period comparisons can be affected much more. Missing control is a separate coverage problem.",
+    "table": "deep_zero_bias"
+  }
+]
