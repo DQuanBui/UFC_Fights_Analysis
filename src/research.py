@@ -485,6 +485,119 @@ def career_questions(data):
     }, questions
 
 
+def rate_decomposition(
+    frame, group="weight_class", period="period", outcome="is_decision", minimum=50
+):
+    """Exact within-group and composition decomposition on shared support."""
+    cells = frame.groupby([group, period])[outcome].agg(n="size", rate="mean")
+    counts = cells.n.unstack(period)
+    if set(counts.columns) != {"Before", "After"}:
+        raise ValueError("Both Before and After periods are required")
+    supported = counts.index[counts.ge(minimum).all(axis=1)]
+    counts = counts.loc[supported]
+    rates = cells.rate.unstack(period).loc[supported]
+    weights = counts / counts.sum()
+    result = pd.DataFrame(
+        {
+            group: supported,
+            "n_before": counts.Before,
+            "n_after": counts.After,
+            "rate_before": rates.Before,
+            "rate_after": rates.After,
+            "weight_before": weights.Before,
+            "weight_after": weights.After,
+        }
+    ).reset_index(drop=True)
+    result["within_contribution"] = (
+        (result.rate_after - result.rate_before)
+        * (result.weight_before + result.weight_after)
+        / 2
+    )
+    result["mix_contribution"] = (
+        (result.weight_after - result.weight_before)
+        * (result.rate_before + result.rate_after)
+        / 2
+    )
+    result["total_contribution"] = result.within_contribution + result.mix_contribution
+    return result
+
+
+@chapter("05")
+def outcome_questions(data):
+    fights, _ = cohort(data)
+    period = fights[fights.fight_year.between(2010, 2025)].copy()
+    period["period"] = np.where(period.fight_year.lt(2020), "Before", "After")
+    decomposition = rate_decomposition(period)
+    decisions = fights[fights.is_decision].copy()
+    decisions["divided_decision"] = decisions.method.isin(
+        ["Decision - Split", "Decision - Majority"]
+    )
+    divided = binomial_summary(decisions, "weight_class", "divided_decision")
+    divided["eligible_comparison"] = divided.n.ge(100)
+    scheduled = period[period.standard_format & period.scheduled_rounds.eq(5)]
+    title = binomial_summary(scheduled, ["period", "title_fight"], "is_decision")
+    prior = (
+        data["fights"].query("is_ufc").sort_values(["event_date", "fight_id"]).copy()
+    )
+    prior["pair"] = prior.apply(lambda r: "|".join(sorted([r.r_id, r.b_id])), axis=1)
+    group = prior.groupby("pair")
+    prior["previous_winner"] = group.winner_id.shift()
+    prior["previous_date"] = group.event_date.shift()
+    prior["previous_decisive"] = group.decisive.shift(fill_value=False)
+    prior["meeting_number"] = group.cumcount() + 1
+    rematch = prior[
+        prior.in_scope
+        & prior.decisive
+        & prior.previous_decisive
+        & prior.meeting_number.eq(2)
+        & prior.event_date.gt(prior.previous_date)
+    ].copy()
+    rematch["repeat_winner"] = rematch.winner_id.eq(rematch.previous_winner)
+    rematch["gap_years"] = (
+        rematch.event_date - rematch.previous_date
+    ).dt.days / 365.2425
+    rematch["gap_band"] = pd.cut(rematch.gap_years, [0, 1, 3, 100], right=True)
+    rematches = binomial_summary(rematch, "gap_band", "repeat_winner")
+    biggest = decomposition.sort_values("within_contribution").iloc[0]
+    maximum = (
+        divided[divided.eligible_comparison]
+        .sort_values("rate", ascending=False)
+        .iloc[0]
+    )
+    questions = [
+        answer(
+            "Which divisions drive the change in decision share?",
+            f"On shared divisions, within-division changes contribute {decomposition.within_contribution.sum() * 100:+.2f} percentage points and division-mix changes contribute {decomposition.mix_contribution.sum() * 100:+.2f}. {biggest.weight_class} has the most negative within-division contribution ({biggest.within_contribution * 100:+.2f} points).",
+            "The contributions sum exactly to the shared-cohort rate change, which differs from the all-division change. This is a symmetric accounting decomposition, not causal attribution.",
+            "deep_decision_decomposition",
+        ),
+        answer(
+            "Where are judges less often unanimous when a fight reaches a decision?",
+            f"Among divisions with at least 100 decisions, {maximum.weight_class} has the largest split-or-majority share: {maximum.rate:.1%} of {int(maximum.n)} decisions.",
+            "The denominator is decided bouts, not every fight. Split or majority results indicate disagreement in scorecards, not proof of a wrong verdict or bias.",
+            "deep_divided_decisions",
+        ),
+        answer(
+            "Do title and non-title fights differ when both have five-round schedules?",
+            f"Among standard five-round bouts in 2020-2025, decision shares are {title.loc[title.period.eq('After') & title.title_fight.eq(1), 'rate'].iloc[0]:.1%} for title fights and {title.loc[title.period.eq('After') & title.title_fight.eq(0), 'rate'].iloc[0]:.1%} for non-title fights.",
+            "Matching scheduled length and period removes two obvious differences. Division and athlete selection remain uncontrolled, so title status is not a treatment effect.",
+            "deep_title_schedule",
+        ),
+        answer(
+            "How often does the first winner win the first UFC rematch?",
+            f"The original winner repeats in {rematch.repeat_winner.mean():.1%} of {len(rematch)} eligible first rematches with decisive results in both meetings.",
+            "Only the second observed UFC meeting is counted for each unordered pair. Rematches are selectively booked; results do not generalize to all hypothetical rematches.",
+            "deep_rematches",
+        ),
+    ]
+    return {
+        "deep_decision_decomposition": decomposition,
+        "deep_divided_decisions": divided,
+        "deep_title_schedule": title,
+        "deep_rematches": rematches,
+    }, questions
+
+
 def run_chapter(number, data=None):
     if data is None:
         from .pipeline import prepare

@@ -1,0 +1,26 @@
+[
+  {
+    "question": "Which divisions drive the change in decision share?",
+    "answer": "On shared divisions, within-division changes contribute -1.12 percentage points and division-mix changes contribute +1.71. Lightweight has the most negative within-division contribution (-0.93 points).",
+    "interpretation": "The contributions sum exactly to the shared-cohort rate change, which differs from the all-division change. This is a symmetric accounting decomposition, not causal attribution.",
+    "table": "deep_decision_decomposition"
+  },
+  {
+    "question": "Where are judges less often unanimous when a fight reaches a decision?",
+    "answer": "Among divisions with at least 100 decisions, Welterweight has the largest split-or-majority share: 23.0% of 657 decisions.",
+    "interpretation": "The denominator is decided bouts, not every fight. Split or majority results indicate disagreement in scorecards, not proof of a wrong verdict or bias.",
+    "table": "deep_divided_decisions"
+  },
+  {
+    "question": "Do title and non-title fights differ when both have five-round schedules?",
+    "answer": "Among standard five-round bouts in 2020-2025, decision shares are 47.0% for title fights and 47.6% for non-title fights.",
+    "interpretation": "Matching scheduled length and period removes two obvious differences. Division and athlete selection remain uncontrolled, so title status is not a treatment effect.",
+    "table": "deep_title_schedule"
+  },
+  {
+    "question": "How often does the first winner win the first UFC rematch?",
+    "answer": "The original winner repeats in 59.2% of 174 eligible first rematches with decisive results in both meetings.",
+    "interpretation": "Only the second observed UFC meeting is counted for each unordered pair. Rematches are selectively booked; results do not generalize to all hypothetical rematches.",
+    "table": "deep_rematches"
+  }
+]

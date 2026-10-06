@@ -8,6 +8,15 @@ from .data_loader import ROOT
 from .notebooks import execute_notebooks
 
 SECTIONS = {
+    "05": (
+        "Can composition, schedules and rematches explain outcomes?",
+        [
+            "deep_decision_decomposition",
+            "deep_divided_decisions",
+            "deep_title_schedule",
+            "deep_rematches",
+        ],
+    ),
     "04": (
         "What do rankings, debut matchups and early careers really reveal?",
         [
