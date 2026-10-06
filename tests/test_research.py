@@ -2,6 +2,26 @@ import pandas as pd
 import pytest
 
 from src.research import product_decomposition, rate_decomposition
+from src.research_models import expanding_splits
+
+
+def test_ablation_folds_respect_dates_and_reserve_test_period():
+    frame = pd.DataFrame(
+        {
+            "fight_year": [2017, 2018, 2018, 2019, 2023],
+            "event_date": pd.to_datetime(
+                ["2017-12-01", "2018-02-01", "2018-02-01", "2019-05-01", "2023-01-01"]
+            ),
+        }
+    )
+    splits = list(expanding_splits(frame, years=[2018, 2019]))
+    assert [len(s[2]) for s in splits] == [2, 1]
+    assert all(
+        train.event_date.max() < validation.event_date.min()
+        for _, train, validation in splits
+    )
+    with pytest.raises(ValueError, match="2023"):
+        list(expanding_splits(frame, years=[2023]))
 
 
 def test_within_and_mix_contributions_reconcile():

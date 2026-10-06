@@ -896,6 +896,66 @@ def adjusted_associations(data):
     }, questions
 
 
+@chapter("08")
+def model_robustness(data):
+    from .research_models import feature_ablation, holdout_diagnostics
+
+    folds = feature_ablation(data["fights"])
+    summaries = []
+    for name, rows in folds.groupby("features"):
+        summaries.append(
+            dict(
+                features=name,
+                validation_fights=rows.n.sum(),
+                weighted_accuracy=np.average(rows.accuracy, weights=rows.n),
+                weighted_log_loss=np.average(rows.log_loss, weights=rows.n),
+                weighted_mean_fold_auc=np.average(rows.roc_auc, weights=rows.n),
+            )
+        )
+    summary = pd.DataFrame(summaries)
+    metadata = json.loads((TABLES / "model_metadata.json").read_text(encoding="utf-8"))
+    predictions = pd.read_csv(TABLES / "test_predictions.csv")
+    predictions = predictions[predictions.model.eq(metadata["selected_model"])]
+    confidence, years, gains = holdout_diagnostics(data["fights"], predictions)
+    by_name = summary.set_index("features")
+    full = by_name.loc["Full historical features"]
+    basic = by_name.loc["Age and division"]
+    gain = gains[gains.comparator.eq("Source red-corner heuristic")].iloc[0]
+    questions = [
+        answer(
+            "Do richer histories help consistently before the held-out test period?",
+            f"Across five expanding-year evaluations in 2018-2022, full historical features have weighted log loss {full.weighted_log_loss:.4f}, compared with {basic.weighted_log_loss:.4f} for age and division alone.",
+            "The same logistic specification is used for each feature family and preprocessing is refitted inside each chronological fold. Inspect year-specific results for consistency. These are exploratory development checks, not a newly untouched benchmark.",
+            "deep_feature_ablation_summary",
+        ),
+        answer(
+            "How stable is the selected model across held-out years?",
+            f"Annual accuracy ranges from {years.accuracy.min():.1%} to {years.accuracy.max():.1%} in the existing 2023-2026 holdout.",
+            "These are diagnostics of the already evaluated model, not a reason to select a different model on the same holdout. The final year has fewer months and fights.",
+            "deep_model_years",
+        ),
+        answer(
+            "Are the model’s most confident predictions more reliable?",
+            f"The populated confidence bands have observed accuracy from {confidence.accuracy.min():.1%} to {confidence.accuracy.max():.1%}; the highest populated band contains {int(confidence.iloc[-1].n)} fights.",
+            "Compare mean confidence with observed accuracy and interval width. No confidence cutoff is optimized on these test data; small high-confidence groups can be noisy.",
+            "deep_model_confidence",
+        ),
+        answer(
+            "Does the model improve on always choosing the source red corner?",
+            f"The selected model improves accuracy by {gain.accuracy_gain * 100:.2f} percentage points on the same fights; the paired event-bootstrap interval is {gain.event_bootstrap_low * 100:.2f} to {gain.event_bootstrap_high * 100:.2f} points.",
+            "Pairing comparisons within the same fight is more informative than comparing two separate accuracy intervals. Recurring fighters across events still create unmodeled dependence.",
+            "deep_paired_model_gain",
+        ),
+    ]
+    return {
+        "deep_feature_ablation_folds": folds,
+        "deep_feature_ablation_summary": summary,
+        "deep_model_confidence": confidence,
+        "deep_model_years": years,
+        "deep_paired_model_gain": gains,
+    }, questions
+
+
 def run_chapter(number, data=None):
     if data is None:
         from .pipeline import prepare

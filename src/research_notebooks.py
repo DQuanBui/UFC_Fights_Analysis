@@ -8,6 +8,16 @@ from .data_loader import ROOT
 from .notebooks import execute_notebooks
 
 SECTIONS = {
+    "08": (
+        "Which features help, when does the model fail, and how robust is its lift?",
+        [
+            "deep_feature_ablation_summary",
+            "deep_feature_ablation_folds",
+            "deep_model_years",
+            "deep_model_confidence",
+            "deep_paired_model_gain",
+        ],
+    ),
     "07": (
         "Which physical associations survive adjustment and sensitivity checks?",
         [
