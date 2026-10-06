@@ -257,6 +257,125 @@ def cleaning_sensitivity(data):
     }, questions
 
 
+def product_decomposition(count_before, count_after, rate_before, rate_after):
+    """Exact symmetric decomposition of a change in count times rate."""
+    return (
+        (count_after - count_before) * (rate_before + rate_after) / 2,
+        (rate_after - rate_before) * (count_before + count_after) / 2,
+    )
+
+
+@chapter("03")
+def growth_drivers(data):
+    from .analysis import annual_summary
+
+    fights, appearances = cohort(data)
+    annual = annual_summary(fights, appearances).set_index("fight_year")
+    changes = []
+    for start, end in [(2005, 2010), (2010, 2015), (2015, 2025)]:
+        a, b = annual.loc[start], annual.loc[end]
+        event_effect, card_effect = product_decomposition(
+            a.events, b.events, a.fights_per_event, b.fights_per_event
+        )
+        changes.append(
+            dict(
+                start=start,
+                end=end,
+                fight_change=b.fights - a.fights,
+                event_count_contribution=event_effect,
+                card_size_contribution=card_effect,
+                start_events=a.events,
+                end_events=b.events,
+                start_card_size=a.fights_per_event,
+                end_card_size=b.fights_per_event,
+            )
+        )
+    changes = pd.DataFrame(changes)
+    events = fights[fights.fight_year.le(2025)].drop_duplicates("event_id")
+    concentration = []
+    for year, rows in events.groupby("fight_year"):
+        shares = rows.country.value_counts(normalize=True)
+        concentration.append(
+            dict(
+                year=year,
+                events=len(rows),
+                countries=len(shares),
+                country_hhi=(shares**2).sum(),
+                effective_country_count=1 / (shares**2).sum(),
+                usa_share=rows.country.eq("USA").mean(),
+                largest_city_share=rows.city.value_counts(normalize=True).iloc[0],
+            )
+        )
+    concentration = pd.DataFrame(concentration)
+    first_year = (
+        data["appearances"].query("is_ufc").groupby("fighter_id").fight_year.min()
+    )
+    participation = appearances[["fight_year", "fighter_id"]].drop_duplicates()
+    participation["first_observed_year"] = participation.fighter_id.map(first_year)
+    participation["new_entrant"] = participation.fight_year.eq(
+        participation.first_observed_year
+    )
+    entrants = (
+        participation.groupby("fight_year")
+        .agg(
+            active_fighters=("fighter_id", "size"), new_fighters=("new_entrant", "sum")
+        )
+        .reset_index()
+    )
+    entrants["returning_fighters"] = entrants.active_fighters - entrants.new_fighters
+    entrants["entrant_share"] = entrants.new_fighters / entrants.active_fighters
+    retention = []
+    for year in range(2000, 2025):
+        ids = set(participation.loc[participation.fight_year.eq(year), "fighter_id"])
+        following = set(
+            participation.loc[participation.fight_year.eq(year + 1), "fighter_id"]
+        )
+        retention.append(
+            dict(
+                year=year,
+                active=len(ids),
+                seen_next_year=len(ids & following),
+                next_year_return_share=len(ids & following) / len(ids),
+            )
+        )
+    retention = pd.DataFrame(retention)
+    row = changes.iloc[1]
+    geo = concentration.set_index("year")
+    last = entrants.query("fight_year == 2025").iloc[0]
+    questions = [
+        answer(
+            "Did fight volume grow through more events or larger cards?",
+            f"From 2010 to 2015, fight volume changed by {row.fight_change:.0f}; the exact decomposition attributes {row.event_count_contribution:.1f} fights to event count and {row.card_size_contribution:.1f} to card size.",
+            "This symmetric accounting identity divides the interaction equally. It explains arithmetic contributions, not causal drivers of the schedule.",
+            "deep_growth_decomposition",
+        ),
+        answer(
+            "Does visiting more countries mean events are evenly distributed?",
+            f"In 2025 the snapshot includes {int(geo.loc[2025, 'countries'])} country/territory labels, but concentration is equivalent to only {geo.loc[2025, 'effective_country_count']:.2f} equally represented hosts.",
+            "The reciprocal Herfindahl index distinguishes geographic breadth from geographic balance. It weights events, not fighters or audience reach.",
+            "deep_geographic_concentration",
+        ),
+        answer(
+            "How much of the active roster consists of new UFC entrants?",
+            f"In 2025, {int(last.new_fighters)} of {int(last.active_fighters)} active fighters ({last.entrant_share:.1%}) had their first observed UFC bout that year.",
+            "A first observed appearance is not necessarily a professional debut. Annual counts omit inactive athletes, so this is participation rather than roster size.",
+            "deep_entrant_flow",
+        ),
+        answer(
+            "How persistent is yearly fighter participation?",
+            f"Among {int(retention.iloc[-1].active)} fighters active in 2024, {int(retention.iloc[-1].seen_next_year)} ({retention.iloc[-1].next_year_return_share:.1%}) also appear in 2025.",
+            "Not returning the next year does not prove release or retirement. Injury, inactivity and incomplete source coverage can produce the same pattern; partial 2026 is excluded.",
+            "deep_annual_return",
+        ),
+    ]
+    return {
+        "deep_growth_decomposition": changes,
+        "deep_geographic_concentration": concentration,
+        "deep_entrant_flow": entrants,
+        "deep_annual_return": retention,
+    }, questions
+
+
 def run_chapter(number, data=None):
     if data is None:
         from .pipeline import prepare

@@ -8,6 +8,15 @@ from .data_loader import ROOT
 from .notebooks import execute_notebooks
 
 SECTIONS = {
+    "03": (
+        "What drives growth, geographic spread and fighter turnover?",
+        [
+            "deep_growth_decomposition",
+            "deep_geographic_concentration",
+            "deep_entrant_flow",
+            "deep_annual_return",
+        ],
+    ),
     "02": (
         "How sensitive are the results to cleaning and metric definitions?",
         [

@@ -1,0 +1,26 @@
+[
+  {
+    "question": "Did fight volume grow through more events or larger cards?",
+    "answer": "From 2010 to 2015, fight volume changed by 220; the exact decomposition attributes 187.7 fights to event count and 32.3 to card size.",
+    "interpretation": "This symmetric accounting identity divides the interaction equally. It explains arithmetic contributions, not causal drivers of the schedule.",
+    "table": "deep_growth_decomposition"
+  },
+  {
+    "question": "Does visiting more countries mean events are evenly distributed?",
+    "answer": "In 2025 the snapshot includes 12 country/territory labels, but concentration is equivalent to only 2.19 equally represented hosts.",
+    "interpretation": "The reciprocal Herfindahl index distinguishes geographic breadth from geographic balance. It weights events, not fighters or audience reach.",
+    "table": "deep_geographic_concentration"
+  },
+  {
+    "question": "How much of the active roster consists of new UFC entrants?",
+    "answer": "In 2025, 95 of 620 active fighters (15.3%) had their first observed UFC bout that year.",
+    "interpretation": "A first observed appearance is not necessarily a professional debut. Annual counts omit inactive athletes, so this is participation rather than roster size.",
+    "table": "deep_entrant_flow"
+  },
+  {
+    "question": "How persistent is yearly fighter participation?",
+    "answer": "Among 629 fighters active in 2024, 475 (75.5%) also appear in 2025.",
+    "interpretation": "Not returning the next year does not prove release or retirement. Injury, inactivity and incomplete source coverage can produce the same pattern; partial 2026 is excluded.",
+    "table": "deep_annual_return"
+  }
+]
