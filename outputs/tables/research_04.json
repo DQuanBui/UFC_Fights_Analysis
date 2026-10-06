@@ -13,7 +13,7 @@
   },
   {
     "question": "Does the age association strengthen as the age gap widens?",
-    "answer": "Younger-fighter win shares range from 52.3% to 69.2% across the four unequal-age bands shown below.",
+    "answer": "Younger-fighter win share is 52.3% for gaps up to two years and 69.2% for gaps over ten years. The four bands are monotonically increasing.",
     "interpretation": "Compare the bands and their sample sizes rather than assuming a linear age effect. Equal-age and missing-DOB bouts are excluded.",
     "table": "deep_age_gap"
   },

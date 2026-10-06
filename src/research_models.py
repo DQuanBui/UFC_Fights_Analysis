@@ -125,8 +125,9 @@ def holdout_diagnostics(fights, predictions):
             )
         )
     differences = []
+    majority_class = int(frame.loc[frame.fight_year.le(2022), "a_won"].mean() >= 0.5)
     for name, baseline in [
-        ("Majority baseline", np.zeros(len(predictions), dtype=int)),
+        ("Majority baseline", np.full(len(predictions), majority_class)),
         (
             "Source red-corner heuristic",
             frame.loc[predictions.fight_id, "source_red_is_a"].astype(int).to_numpy(),

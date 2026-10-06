@@ -529,7 +529,10 @@ def build_notebooks():
         )
     )
     paths = []
+    from .research_notebooks import cells_for
+
     for name, cells in books.items():
+        cells.extend(cells_for(name[:2]))
         notebook = nbf.v4.new_notebook(
             cells=cells,
             metadata={

@@ -48,6 +48,15 @@ def main():
         from .reporting import build_findings
 
         build_findings()
+        from .research import CHAPTERS, run_chapter
+        from .research_reporting import build_research_report
+        from .research_visualization import export_research_charts
+
+        for number in sorted(CHAPTERS):
+            run_chapter(number, data)
+            print(f"Completed research chapter {number}", flush=True)
+        export_research_charts()
+        build_research_report()
 
 
 if __name__ == "__main__":

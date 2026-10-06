@@ -5,7 +5,6 @@ import argparse
 import nbformat
 
 from .data_loader import ROOT
-from .notebooks import execute_notebooks
 
 SECTIONS = {
     "09": (
@@ -103,6 +102,11 @@ def cells_for(number):
             f"from src.research import run_chapter, display_answers\ndeep_tables, deep_answers = run_chapter('{number}')\ndisplay_answers(deep_answers)"
         )
     )
+    cells.append(
+        nbformat.v4.new_code_cell(
+            f"from src.research_visualization import research_chart\nshow(research_chart('{number}'))"
+        )
+    )
     for name in tables:
         cells.append(nbformat.v4.new_code_cell(f"display(deep_tables['{name}'])"))
     for cell in cells:
@@ -124,6 +128,8 @@ def update(number, execute=True):
     notebook.cells.extend(cells_for(number))
     nbformat.write(notebook, path)
     if execute:
+        from .notebooks import execute_notebooks
+
         execute_notebooks([path])
     return path
 

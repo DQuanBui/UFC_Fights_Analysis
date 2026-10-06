@@ -465,7 +465,7 @@ def career_questions(data):
         ),
         answer(
             "Does the age association strengthen as the age gap widens?",
-            f"Younger-fighter win shares range from {age.rate.min():.1%} to {age.rate.max():.1%} across the four unequal-age bands shown below.",
+            f"Younger-fighter win share is {age.iloc[0].rate:.1%} for gaps up to two years and {age.iloc[-1].rate:.1%} for gaps over ten years. The four bands are {'monotonically increasing' if age.rate.is_monotonic_increasing else 'not monotonically increasing'}.",
             "Compare the bands and their sample sizes rather than assuming a linear age effect. Equal-age and missing-DOB bouts are excluded.",
             "deep_age_gap",
         ),
@@ -866,7 +866,7 @@ def adjusted_associations(data):
     questions = [
         answer(
             "Does the reach association survive adjustment for other fighter characteristics?",
-            f"On the same {len(frame):,} complete-case bouts, the crude odds ratio per additional 2 inches of reach is {np.exp(crude.coef_[0, 0]):.3f}; the adjusted ratio is {reach.odds_ratio:.3f} (250-event-bootstrap 95% interval {reach.event_bootstrap_low:.3f}-{reach.event_bootstrap_high:.3f}).",
+            f"On the same {len(frame):,} complete-case bouts, the crude odds ratio per additional 2 inches of reach is {np.exp(crude.coef_[0, 0]):.3f}; the adjusted ratio is {reach.odds_ratio:.3f} (250-replicate event-bootstrap 95% interval {reach.event_bootstrap_low:.3f}-{reach.event_bootstrap_high:.3f}).",
             "The exploratory logistic model includes age, height and prior UFC experience differences plus division and decade indicators. Measurements are snapshot traits; missingness, matchup quality and recurring fighters prevent a causal interpretation. Odds ratios are not percentage-point changes.",
             "deep_adjusted_attributes",
         ),
@@ -920,11 +920,15 @@ def model_robustness(data):
     by_name = summary.set_index("features")
     full = by_name.loc["Full historical features"]
     basic = by_name.loc["Age and division"]
+    losses = folds.pivot(index="year", columns="features", values="log_loss")
+    improved_years = (
+        losses["Full historical features"] < losses["Age and division"]
+    ).sum()
     gain = gains[gains.comparator.eq("Source red-corner heuristic")].iloc[0]
     questions = [
         answer(
             "Do richer histories help consistently before the held-out test period?",
-            f"Across five expanding-year evaluations in 2018-2022, full historical features have weighted log loss {full.weighted_log_loss:.4f}, compared with {basic.weighted_log_loss:.4f} for age and division alone.",
+            f"Across five expanding-year evaluations in 2018-2022, full historical features improve log loss in {improved_years} of five years. Weighted log loss is {full.weighted_log_loss:.4f}, compared with {basic.weighted_log_loss:.4f} for age and division alone.",
             "The same logistic specification is used for each feature family and preprocessing is refitted inside each chronological fold. Inspect year-specific results for consistency. These are exploratory development checks, not a newly untouched benchmark.",
             "deep_feature_ablation_summary",
         ),
@@ -936,7 +940,7 @@ def model_robustness(data):
         ),
         answer(
             "Are the model’s most confident predictions more reliable?",
-            f"The populated confidence bands have observed accuracy from {confidence.accuracy.min():.1%} to {confidence.accuracy.max():.1%}; the highest populated band contains {int(confidence.iloc[-1].n)} fights.",
+            f"Accuracy rises from {confidence.iloc[0].accuracy:.1%} in the lowest populated confidence band (n={int(confidence.iloc[0].n)}) to {confidence.iloc[-1].accuracy:.1%} in the highest (n={int(confidence.iloc[-1].n)}); the highest band's mean predicted confidence is {confidence.iloc[-1].mean_confidence:.1%}.",
             "Compare mean confidence with observed accuracy and interval width. No confidence cutoff is optimized on these test data; small high-confidence groups can be noisy.",
             "deep_model_confidence",
         ),

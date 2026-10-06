@@ -1,7 +1,7 @@
 [
   {
     "question": "Do richer histories help consistently before the held-out test period?",
-    "answer": "Across five expanding-year evaluations in 2018-2022, full historical features have weighted log loss 0.6730, compared with 0.6827 for age and division alone.",
+    "answer": "Across five expanding-year evaluations in 2018-2022, full historical features improve log loss in 4 of five years. Weighted log loss is 0.6730, compared with 0.6827 for age and division alone.",
     "interpretation": "The same logistic specification is used for each feature family and preprocessing is refitted inside each chronological fold. Inspect year-specific results for consistency. These are exploratory development checks, not a newly untouched benchmark.",
     "table": "deep_feature_ablation_summary"
   },
@@ -13,7 +13,7 @@
   },
   {
     "question": "Are the model’s most confident predictions more reliable?",
-    "answer": "The populated confidence bands have observed accuracy from 51.8% to 79.5%; the highest populated band contains 78 fights.",
+    "answer": "Accuracy rises from 51.8% in the lowest populated confidence band (n=575) to 79.5% in the highest (n=78); the highest band's mean predicted confidence is 72.1%.",
     "interpretation": "Compare mean confidence with observed accuracy and interval width. No confidence cutoff is optimized on these test data; small high-confidence groups can be noisy.",
     "table": "deep_model_confidence"
   },

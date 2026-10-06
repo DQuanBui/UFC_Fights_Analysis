@@ -112,6 +112,7 @@ with st.sidebar:
             "Fighter Comparison",
             "Fight Prediction / ML",
             "Key Insights",
+            "Research Questions",
         ],
     )
     st.divider()
@@ -121,7 +122,7 @@ with st.sidebar:
     )
 
 fights = all_fights.copy()
-fixed_page = page in ["Fight Prediction / ML", "Key Insights"]
+fixed_page = page in ["Fight Prediction / ML", "Key Insights", "Research Questions"]
 if not fixed_page:
     with st.sidebar:
         years = st.slider("Fight years", 1994, 2026, (1994, 2026))
@@ -734,6 +735,46 @@ elif page == "Fight Prediction / ML":
         table(load_table("model_coefficients"))
         table(load_table("model_subgroups"))
         table(load_table("model_calibration"))
+
+elif page == "Research Questions":
+    from src.research_notebooks import SECTIONS
+
+    st.write(
+        "Explore additional questions, computed answers and the evidence behind them. Each study uses the cohort and period described below."
+    )
+    chapter = st.selectbox(
+        "Research topic",
+        sorted(SECTIONS),
+        format_func=lambda n: f"{n} · {SECTIONS[n][0]}",
+    )
+    answer_path = ROOT / "outputs" / "tables" / f"research_{chapter}.json"
+    if answer_path.exists():
+        answers = json.loads(answer_path.read_text(encoding="utf-8"))
+        st.image(
+            str(ROOT / "outputs" / "charts" / f"research_{chapter}.png"),
+            width="stretch",
+        )
+        st.caption(
+            "Exploratory comparisons; uncertainty intervals are pointwise. Repeated fighters and selective matchmaking limit interpretation."
+        )
+        for index, item in enumerate(answers):
+            st.subheader(item["question"])
+            st.write(item["answer"])
+            st.caption(item["interpretation"])
+            with st.expander("Inspect supporting evidence"):
+                evidence = load_table(item["table"])
+                table(evidence)
+                st.download_button(
+                    "Download evidence CSV",
+                    evidence.to_csv(index=False).encode("utf-8"),
+                    f"{item['table']}.csv",
+                    "text/csv",
+                    key=f"research_{chapter}_{index}",
+                )
+    else:
+        st.info(
+            "Research results are not available. Rebuild the analysis with python -m src.pipeline --all."
+        )
 
 else:
     findings = ROOT / "outputs" / "tables" / "insights.json"

@@ -1,7 +1,7 @@
 [
   {
     "question": "Does the reach association survive adjustment for other fighter characteristics?",
-    "answer": "On the same 7,195 complete-case bouts, the crude odds ratio per additional 2 inches of reach is 1.079; the adjusted ratio is 1.066 (250-event-bootstrap 95% interval 1.031-1.105).",
+    "answer": "On the same 7,195 complete-case bouts, the crude odds ratio per additional 2 inches of reach is 1.079; the adjusted ratio is 1.066 (250-replicate event-bootstrap 95% interval 1.031-1.105).",
     "interpretation": "The exploratory logistic model includes age, height and prior UFC experience differences plus division and decade indicators. Measurements are snapshot traits; missingness, matchup quality and recurring fighters prevent a causal interpretation. Odds ratios are not percentage-point changes.",
     "table": "deep_adjusted_attributes"
   },
