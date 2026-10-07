@@ -59,7 +59,7 @@ Historical features use **earlier dates only**, excluding every bout on the curr
 | [07 · Statistics](notebooks/07_statistical_analysis.ipynb) | Paired effects, confidence intervals and exploratory tests |
 | [08 · Machine learning](notebooks/08_machine_learning.ipynb) | Chronological evaluation, baselines and calibration |
 
-Every notebook includes additional computed questions and answers. The [34-question research report](RESEARCH.md) explores source bias, denominator sensitivity, growth decomposition, debut outcomes, first rematches, matched round pace, adjusted physical associations, chronological feature ablations and bonus categories. Nine new figures and downloadable evidence tables are also available on the dashboard's **Research Questions** page.
+Every notebook includes additional computed questions and answers. The [46-question research report](RESEARCH.md) explores source bias, denominator sensitivity, growth decomposition, debut outcomes, first rematches, matched round pace, adjusted physical associations, chronological feature ablations, bonus categories, opponent-adjusted Elo, inactivity and model generalization. Twelve research figures and downloadable evidence tables are available on the dashboard's searchable **Research Questions** page.
 
 ## Key Results
 
@@ -72,6 +72,8 @@ Every notebook includes additional computed questions and answers. The [34-quest
 These are observational associations. [Sixteen findings](FINDINGS.md) provide evidence, interpretation and source-table references.
 
 The deeper analysis finds that **88.4% of debut winners versus 52.2% of debut losers** reach a third UFC bout within an equally observed 730-day window. After accounting for age, height, prior UFC experience, division and era, an additional two inches of reach has an exploratory adjusted win odds ratio of **1.066** (event-bootstrap interval **1.031–1.105**). These comparisons describe selected matchups and do not establish causation. [Methods and denominators](RESEARCH.md).
+
+**Inactivity requires context:** returning fighters win **42.9%** of appearances after gaps over a year, versus **51.8%** after shorter gaps. In bouts with a rest difference of at least 90 days, restricting opponents to within two years of age and 50 pre-fight Elo points gives the longer-rest fighter a **51.1%** win rate (648 bouts; event-bootstrap interval **47.2%–55.0%**). This sensitivity check changes the population and does not identify a causal effect of rest.
 
 ## Machine Learning
 
@@ -97,6 +99,8 @@ The selected model's event-bootstrap accuracy interval is **58.1%–62.6%**. A s
 
 Five expanding-year development evaluations (2018–2022) compare feature families with preprocessing fitted separately in every fold. Historical features improve log loss over age and division alone in **four of five years**. On the existing holdout, the selected model's paired accuracy gain over the red-corner heuristic is **4.65 percentage points** (event-bootstrap interval **1.49–7.88**). These diagnostics do not trigger holdout-based retuning.
 
+Adding strictly prior-date Elo improves development log loss by **0.0022**, but its paired event-bootstrap interval (**−0.0028 to +0.0068**) includes no improvement. Elo remains an exploratory extension. A separate audit finds **53.9%** of held-out bouts include at least one athlete absent from the model-fitting sample; familiarity-specific metrics and sample sizes are reported without changing the frozen model.
+
 ![Held-out ROC curves](outputs/charts/model_roc.png)
 
 Evaluation is sequential replay: earlier test outcomes may update later histories while model parameters stay fixed. Snapshot corrections cannot be reconstructed as known in real time. This is an analytical demonstration, **not a betting system**.
@@ -114,12 +118,13 @@ outputs/tables/      Research results, quality checks and model evaluation
 tests/               Mathematical, integrity and application checks
 DATA_NOTES.md        Scope, definitions, assumptions and limitations
 FINDINGS.md          Sixteen evidence-based findings
-RESEARCH.md          34 deeper questions with figures and supporting evidence
+RESEARCH.md          46 deeper questions with figures and supporting evidence
+outputs/artifact_manifest.json  Recorded inputs, output hashes and runtime versions
 ```
 
 ## Future Improvements
 
-Validate against an independent event census, add timestamped updates, extend backtests to new untouched periods and opponent-adjusted Elo, and incorporate licensed odds or rankings only when historical availability can be established.
+Validate against an independent event census, add timestamped updates, test the exploratory Elo extension on a new untouched period, evaluate dependence across recurring fighters, and incorporate licensed odds or rankings only when historical availability can be established.
 
 ## Contact
 

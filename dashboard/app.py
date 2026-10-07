@@ -38,8 +38,13 @@ def rankings(appearances):
 
 
 @st.cache_data
+def read_table(path, modified_ns):
+    return pd.read_csv(path)
+
+
 def load_table(name):
-    return pd.read_csv(ROOT / "outputs" / "tables" / f"{name}.csv")
+    path = ROOT / "outputs" / "tables" / f"{name}.csv"
+    return read_table(str(path), path.stat().st_mtime_ns)
 
 
 def chart(figure):
@@ -742,14 +747,60 @@ elif page == "Research Questions":
     st.write(
         "Explore additional questions, computed answers and the evidence behind them. Each study uses the cohort and period described below."
     )
+    query = st.text_input(
+        "Search research", placeholder="Try Elo, inactivity, debutant, or missing"
+    )
+    catalog = {}
+    for number in sorted(SECTIONS):
+        path = ROOT / "outputs" / "tables" / f"research_{number}.json"
+        if path.exists():
+            records = json.loads(path.read_text(encoding="utf-8"))
+            catalog[number] = [
+                item
+                for item in records
+                if all(
+                    term
+                    in " ".join(
+                        [item["question"], item["answer"], item["interpretation"]]
+                    ).casefold()
+                    for term in query.casefold().split()
+                )
+            ]
+    options = [number for number, records in catalog.items() if records]
+    st.caption(
+        f"{sum(len(records) for records in catalog.values())} matching questions across {len(options)} topics"
+    )
+    with st.expander("Verify saved research"):
+        st.write(
+            "Check whether saved evidence still matches the recorded analysis source and data."
+        )
+        if st.button("Verify saved results"):
+            from src.provenance import verify_manifest
+
+            verification = verify_manifest()
+            if verification["status"] == "verified":
+                st.success(
+                    f"Verified {verification['checked']} analysis inputs and output files."
+                )
+            else:
+                st.warning(
+                    "The saved evidence needs a full rebuild before it can be verified."
+                )
+                st.write(verification["issues"])
+    if not options:
+        st.info("No research questions match. Try a broader term or clear the search.")
+        st.stop()
+    if st.session_state.get("research_topic") not in options:
+        st.session_state.research_topic = options[0]
     chapter = st.selectbox(
         "Research topic",
-        sorted(SECTIONS),
+        options,
         format_func=lambda n: f"{n} · {SECTIONS[n][0]}",
+        key="research_topic",
     )
     answer_path = ROOT / "outputs" / "tables" / f"research_{chapter}.json"
     if answer_path.exists():
-        answers = json.loads(answer_path.read_text(encoding="utf-8"))
+        answers = catalog[chapter]
         st.image(
             str(ROOT / "outputs" / "charts" / f"research_{chapter}.png"),
             width="stretch",

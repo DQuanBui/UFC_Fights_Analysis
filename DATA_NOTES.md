@@ -128,7 +128,7 @@ References: [scikit-learn leakage guidance](https://scikit-learn.org/stable/comm
 
 ## Extended research methods
 
-The [research catalog](RESEARCH.md) adds 34 exploratory questions, with table-level denominators and explicit limitations. Its Wilson intervals are pointwise and do not account for repeated fighters or event clustering; the collection is not a family of confirmatory hypothesis tests.
+The [research catalog](RESEARCH.md) adds 46 exploratory questions, with table-level denominators and explicit limitations. Its Wilson intervals are pointwise and do not account for repeated fighters or event clustering; the collection is not a family of confirmatory hypothesis tests.
 
 - Growth decomposition uses `change(events) × mean(card size)` and `change(card size) × mean(events)`. Their sum equals the observed fight-count change. Decision-rate decomposition similarly separates within-division rates from composition on shared divisions; its total need not equal the all-division change.
 - Career follow-up begins at the first observed UFC appearance since 2000. Debutants need 730 observable days before the snapshot endpoint, exactly one bout on their debut date, and a decisive debut. The third-bout outcome includes the debut itself. Missing later appearances do not prove release or retirement.
@@ -139,3 +139,17 @@ The [research catalog](RESEARCH.md) adds 34 exploratory questions, with table-le
 - Bonus-era comparisons begin in the first observed category year (2006), omit partial 2026, and use 2015–2025 for the modern category comparison to avoid the 2014 source transition. Division standardization fixes pooled weights among divisions with at least 50 finishes and 50 decisions. Source absence is treated as no recorded bonus; external completeness and recipient attribution remain unverified.
 
 All event-bootstrap procedures preserve within-event dependence but do not fully account for fighters recurring across events. RNG seeds are fixed for reproducibility. The full rebuild command is `python -m src.pipeline --all`; `python -m src.notebooks --build --execute` preserves the research extensions when regenerating notebooks.
+
+## Opponent strength, activity and generalization
+
+Elo is a reproducible research specification: initial rating 1500, logistic scale 400, and fixed update factor K=32. Wins receive score 1, losses 0 and draws 0.5; no contests do not update ratings. Each event date reads frozen ratings before any result that date is applied. Tournament updates are summed after the whole date. Ratings are global across divisions and do not decay with inactivity. Non-UFC bouts never enter the replay; 1993 UFC history is retained. All appearances, including no contests, update the last-fight date and prior-opponent history. A debut's rest interval is missing, never zero.
+
+Elo experiments replay only dates through 2022 and evaluate 2018–2022 expanding windows. The same logistic settings and training-only preprocessing compare existing histories, Elo/division, and histories plus Elo. Raw K=16/32/64 probabilities are a reported sensitivity study; they do not retune the published 2023–2026 model. The paired log-loss-reduction interval resamples events across the development predictions and is exploratory.
+
+Inactivity analyses use decisive bouts in 2000–2025. Appearance-level comparisons include only returning fighters; matched bout comparisons require both fighters to have prior UFC appearances and a rest difference of at least 90 days. Nested fixed calipers restrict age difference to two years and then pre-fight Elo difference to 50. This changes the eligible sample rather than estimating an intervention. Non-returners are absent, and the dataset cannot identify reasons for time away. Elo itself omits non-UFC experience and injury information.
+
+Generalization diagnostics retain the original selected model and predictions. Fighter membership is fixed from the decisive pre-2023 fitting rows. An athlete absent from fitting remains so throughout the test period, even after their earlier test fights update their pre-fight history. The Brier reference predicts the development cohort's A-win prevalence for every held-out fight; each subgroup compares its model and reference errors on identical observations. Metrics for groups below 30 fights are withheld. Confidence and accuracy are distinct: a calibrated predicted-winner probability need not classify every fight correctly.
+
+## Artifact integrity and reproduction
+
+Run notebook execution before the final full pipeline rebuild, then use `python -m src.provenance` to verify the saved artifacts. The full pipeline records hashes for analysis code, raw inputs, generated tables, figures, processed fights and generated reports, plus runtime package versions. Text hashing normalizes CRLF line endings for portable Git checkouts; raw CSV checks remain byte-exact. Missing, changed and unrecorded files fail verification. Notebook execution, statistical validity and external source completeness are separate checks; the manifest does not prove those properties. Isolated notebook reruns can change model output at floating-point precision and require a final full rebuild to renew the recorded artifact set.

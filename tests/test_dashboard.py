@@ -77,3 +77,25 @@ def test_research_evidence_topics(app, number):
     assert [x.value for x in app.subheader] == [x["question"] for x in answers]
     assert len(app.dataframe) == len(answers)
     assert len(app.sidebar.slider) == 0
+
+
+def test_research_search_empty_and_recovery(app):
+    app.sidebar.radio[0].set_value("Research Questions").run()
+    app.text_input[0].set_value("update speed").run()
+    assert not app.exception
+    assert app.selectbox[0].value == "10"
+    assert len(app.subheader) == 1
+    assert "update speed" in app.subheader[0].value
+    app.text_input[0].set_value("no_such_question_xyz").run()
+    assert not app.exception
+    assert any("No research questions match" in x.value for x in app.info)
+    app.text_input[0].set_value("").run()
+    assert not app.exception
+    assert any("46 matching questions" in x.value for x in app.caption)
+
+
+def test_research_verification_action(app):
+    app.sidebar.radio[0].set_value("Research Questions").run()
+    app.button[0].click().run()
+    assert not app.exception
+    assert any("Verified" in x.value for x in app.success)
