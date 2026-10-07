@@ -7,6 +7,27 @@ import nbformat
 from .data_loader import ROOT
 
 SECTIONS = {
+    "12": (
+        "How does the frozen model generalize across fighter familiarity?",
+        [
+            "deep_generalization_familiarity",
+            "deep_generalization_experience",
+            "deep_generalization_errors",
+        ],
+    ),
+    "11": (
+        "What changes after a long gap between UFC appearances?",
+        [
+            "deep_layoff_bands",
+            "deep_layoff_matched",
+            "deep_layoff_age",
+            "deep_layoff_eras",
+        ],
+    ),
+    "10": (
+        "Does opponent strength improve pre-fight prediction?",
+        ["deep_elo_summary", "deep_elo_folds", "deep_elo_gain", "deep_elo_calibration"],
+    ),
     "09": (
         "How do bonus era and award category change the interpretation?",
         [
@@ -89,6 +110,14 @@ SECTIONS = {
     ),
 }
 
+EXTRA_CHAPTERS = {"04": ["11"], "06": ["09"], "08": ["10", "12"]}
+
+
+def notebook_for(number):
+    return next(
+        (book for book, extras in EXTRA_CHAPTERS.items() if number in extras), number
+    )
+
 
 def cells_for(number):
     title, tables = SECTIONS[number]
@@ -111,13 +140,13 @@ def cells_for(number):
         cells.append(nbformat.v4.new_code_cell(f"display(deep_tables['{name}'])"))
     for cell in cells:
         cell.metadata["tags"] = ["research-extension"]
-    if number == "06":
-        cells.extend(cells_for("09"))
+    for extra in EXTRA_CHAPTERS.get(number, []):
+        cells.extend(cells_for(extra))
     return cells
 
 
 def update(number, execute=True):
-    number = "06" if number == "09" else number
+    number = notebook_for(number)
     path = next((ROOT / "notebooks").glob(number + "_*.ipynb"))
     notebook = nbformat.read(path, 4)
     notebook.cells = [

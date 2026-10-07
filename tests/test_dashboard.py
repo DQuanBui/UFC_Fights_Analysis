@@ -3,6 +3,8 @@ from pathlib import Path
 import pytest
 from streamlit.testing.v1 import AppTest
 
+from src.research_notebooks import SECTIONS
+
 APP = Path(__file__).resolve().parents[1] / "dashboard" / "app.py"
 
 
@@ -60,7 +62,7 @@ def test_partial_year_only_and_research_drilldown(app):
     app.sidebar.slider[0].set_value((1994, 2026)).run()
 
 
-@pytest.mark.parametrize("number", [f"{n:02}" for n in range(1, 10)])
+@pytest.mark.parametrize("number", sorted(SECTIONS))
 def test_research_evidence_topics(app, number):
     import json
 

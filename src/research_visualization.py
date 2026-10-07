@@ -239,6 +239,75 @@ def research_chart(number):
             "Bonus categories capture different fight profiles",
             "2015-2025 UFC fights; Wilson 95% intervals; categories may overlap; recipient IDs unavailable",
         )
+    elif number == "10":
+        rows = read("elo_folds")
+        for name, color in [
+            ("Raw Elo K=32", GOLD),
+            ("Historical logistic", TEAL),
+            ("History plus Elo", RED),
+        ]:
+            part = rows[rows.model.eq(name)]
+            ax.plot(part.year, part.log_loss, marker="o", color=color, label=name)
+        ax.set(
+            xlabel="Development evaluation year",
+            ylabel="Log loss (lower is better)",
+            xticks=sorted(rows.year.unique()),
+        )
+        ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.14), ncol=3, fontsize=9)
+        title, subtitle = (
+            "Elo adds a small, inconsistent increment to historical features",
+            "Expanding-year evaluation; fixed K=32; 2023-2026 holdout excluded from this experiment",
+        )
+    elif number == "11":
+        rows = read("layoff_matched")
+        labels = [f"{label}\n(n={int(n):,})" for label, n in zip(rows.cohort, rows.n)]
+        ax.errorbar(
+            rows.win_rate,
+            labels,
+            xerr=[rows.win_rate - rows.event_low, rows.event_high - rows.win_rate],
+            fmt="o",
+            color=TEAL,
+            capsize=5,
+            ms=9,
+        )
+        ax.axvline(0.5, color=GOLD, ls="--", label="50% reference")
+        ax.set(xlim=(0.35, 0.65), xlabel="Longer-rest fighter's win rate")
+        ax.xaxis.set_major_formatter(PercentFormatter(1))
+        ax.margins(y=0.3)
+        ax.legend(loc="lower right")
+        title, subtitle = (
+            "The rest-gap association weakens with age and rating restrictions",
+            "2000-2025 decisive bouts; both fighters returning; event-bootstrap 95% intervals; observational",
+        )
+    elif number == "12":
+        rows = read("generalization_familiarity")
+        rows = rows[rows.reportable].sort_values("accuracy")
+        labels = [f"{label}\n(n={int(n):,})" for label, n in zip(rows.group, rows.n)]
+        ax.errorbar(
+            rows.accuracy,
+            labels,
+            xerr=[rows.accuracy - rows.event_low, rows.event_high - rows.accuracy],
+            fmt="o",
+            color=TEAL,
+            capsize=5,
+            ms=9,
+        )
+        ax.scatter(
+            rows.mean_confidence,
+            labels,
+            color=RED,
+            marker="x",
+            s=70,
+            label="Mean predicted-winner confidence",
+        )
+        ax.set(xlim=(0.45, 0.75), xlabel="Observed accuracy / mean confidence")
+        ax.xaxis.set_major_formatter(PercentFormatter(1))
+        ax.margins(y=0.3)
+        ax.legend(loc="lower right", fontsize=9)
+        title, subtitle = (
+            "Fighter familiarity changes the evaluation population",
+            "Frozen pre-2023 fitting membership; 2023-2026 held-out predictions; event-bootstrap 95% intervals",
+        )
     else:
         plt.close(fig)
         raise ValueError(f"Unknown research chapter: {number}")
@@ -246,10 +315,12 @@ def research_chart(number):
 
 
 def export_research_charts():
+    from .research_notebooks import SECTIONS
+
     CHARTS.mkdir(parents=True, exist_ok=True)
-    for number in range(1, 10):
-        fig = research_chart(f"{number:02}")
-        fig.savefig(CHARTS / f"research_{number:02}.png")
+    for number in sorted(SECTIONS):
+        fig = research_chart(number)
+        fig.savefig(CHARTS / f"research_{number}.png")
         plt.close(fig)
 
 

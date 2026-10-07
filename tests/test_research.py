@@ -111,6 +111,7 @@ def test_paired_model_gain_matches_saved_predictions():
 
 def test_notebook_rebuild_preserves_all_research_chapters(tmp_path, monkeypatch):
     from src import notebooks
+    from src.research_notebooks import EXTRA_CHAPTERS
 
     monkeypatch.setattr(notebooks, "ROOT", tmp_path)
     paths = notebooks.build_notebooks()
@@ -124,5 +125,5 @@ def test_notebook_rebuild_preserves_all_research_chapters(tmp_path, monkeypatch)
         ]
         assert any(f"run_chapter('{path.name[:2]}')" in text for text in research)
         assert any("research_chart(" in text for text in research)
-        if path.name.startswith("06"):
-            assert any("run_chapter('09')" in text for text in research)
+        for extra in EXTRA_CHAPTERS.get(path.name[:2], []):
+            assert any(f"run_chapter('{extra}')" in text for text in research)

@@ -3,7 +3,7 @@
 import json
 
 from .data_loader import ROOT, TABLES
-from .research_notebooks import SECTIONS
+from .research_notebooks import SECTIONS, notebook_for
 
 
 def build_research_report():
@@ -17,7 +17,7 @@ def build_research_report():
     lines = [
         "# UFC research questions and answers",
         "",
-        f"{count} additional questions extend the eight original notebooks. Each answer is calculated from the preserved local snapshot and links to its supporting evidence. Bonus research is included in notebook 06.",
+        f"{count} additional questions extend the eight original notebooks. Each answer is calculated from the preserved local snapshot and links to its supporting evidence. Inactivity research is included in notebook 04, bonuses in notebook 06, and Elo/generalization in notebook 08.",
         "",
         "These are exploratory observational analyses. Full 2025 is used for annual comparisons; 2026 is partial where retained. Wilson intervals describe binomial uncertainty without fighter/event clustering. Event-bootstrap intervals preserve dependence within events, but not recurring fighters across events. Intervals are pointwise and do not correct for selection across this question catalog.",
         "",
@@ -27,7 +27,7 @@ def build_research_report():
     for number in chapters:
         lines.append(f"- [{number} · {SECTIONS[number][0]}](#research-{number})")
     for number, answers in chapters.items():
-        notebook_number = "06" if number == "09" else number
+        notebook_number = notebook_for(number)
         path = next((ROOT / "notebooks").glob(f"{notebook_number}_*.ipynb"))
         lines += [
             "",
