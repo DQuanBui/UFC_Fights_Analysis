@@ -1,0 +1,26 @@
+[
+  {
+    "question": "Do fighters returning after a year win less often?",
+    "answer": "Returning fighters with a gap over 365 days win 42.9% of 1,423 appearances, versus 51.8% of 12,420 appearances after shorter gaps.",
+    "interpretation": "Decisive UFC bouts in 2000-2025 only; debutants have no UFC rest interval and are excluded. Appearances, not independent fights, are the denominator. A long gap does not identify injury, retirement, suspension or the cause of absence.",
+    "table": "deep_layoff_bands"
+  },
+  {
+    "question": "Does the rest-gap association persist among similar-age, similar-rating opponents?",
+    "answer": "When rest gaps differ by at least 90 days, age by at most two years and pre-fight Elo by at most 50, the longer-rest fighter wins 51.1% of 648 bouts (event-bootstrap interval 47.2%-55.0%).",
+    "interpretation": "These fixed calipers restrict the population and may discard many bouts. Both fighters must have prior UFC appearances. This is a sensitivity check, not random assignment or a fully adjusted causal comparison.",
+    "table": "deep_layoff_matched"
+  },
+  {
+    "question": "Is age composition a plausible explanation for the raw inactivity comparison?",
+    "answer": "Among returning fighters aged at least 35, win shares are 39.1% after gaps over one year and 41.4% after shorter gaps. The age-stratified table shows all three age groups and their sample sizes.",
+    "interpretation": "Age strata expose one compositional difference but do not establish mediation or remove strength, era and matchup selection. Wilson intervals are descriptive and ignore recurring fighters.",
+    "table": "deep_layoff_age"
+  },
+  {
+    "question": "Has the time between observed UFC appearances changed by era?",
+    "answer": "Median return intervals are 147 days in 2000-2009 and 189 days in 2020-2025; the recent era's 90th percentile is 406 days.",
+    "interpretation": "These intervals are observed only when a fighter returns for a decisive bout. Athletes who never return are absent, so this is not a time-to-return survival analysis. Earlier non-decisive appearances still reset the previous-fight date.",
+    "table": "deep_layoff_eras"
+  }
+]

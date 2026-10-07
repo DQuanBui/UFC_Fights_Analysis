@@ -1,0 +1,26 @@
+[
+  {
+    "question": "Does opponent-adjusted Elo add information beyond the existing histories?",
+    "answer": "Adding Elo reduces development log loss by +0.0022 (paired event-bootstrap 95% interval -0.0028 to +0.0068) and improves it in 3 of five annual evaluations.",
+    "interpretation": "2018-2022 expanding-year evaluations share identical fights, preprocessing and logistic settings. Positive reduction favors adding Elo. These are already explored development data, not a new independent test; the published holdout model is unchanged.",
+    "table": "deep_elo_gain"
+  },
+  {
+    "question": "How informative is an Elo probability on its own?",
+    "answer": "The fixed K=32 Elo baseline has 55.5% accuracy, log loss 0.6860, and Brier score 0.2465 across 2,422 development evaluation fights.",
+    "interpretation": "Every fighter starts at 1500; scale is 400; ratings use all earlier UFC dates including 1993. Draws update with score 0.5 and no contests do not change ratings. There is no division reset, inactivity decay or professional record outside UFC.",
+    "table": "deep_elo_summary"
+  },
+  {
+    "question": "How sensitive are raw Elo probabilities to the update speed?",
+    "answer": "For K=16, 32 and 64, weighted development log loss ranges from 0.6846 to 0.6885.",
+    "interpretation": "All three settings are reported as a sensitivity study. K=32 is the fixed feature specification; the best observed setting is not selected on the 2023-2026 holdout. Faster updates react more strongly to recent results and can change calibration.",
+    "table": "deep_elo_folds"
+  },
+  {
+    "question": "Are raw Elo probabilities calibrated across their probability range?",
+    "answer": "Among K=32 bins with at least 50 fights, the largest observed calibration gap is 3.1 points: mean predicted 36.4%, observed 33.3% (n=54).",
+    "interpretation": "Fixed probability bins describe fighter A's win chance, not confidence in a predicted winner. Wilson intervals ignore recurring fighters. Binning loses detail; this diagnostic does not recalibrate probabilities on the same observations.",
+    "table": "deep_elo_calibration"
+  }
+]

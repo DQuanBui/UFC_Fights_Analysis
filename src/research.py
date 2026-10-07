@@ -1029,6 +1029,20 @@ def bonus_eras(data):
     }, questions
 
 
+@chapter("10")
+def opponent_strength(data):
+    from .longitudinal import elo_research
+
+    return elo_research(data)
+
+
+@chapter("11")
+def inactivity_questions(data):
+    from .longitudinal import layoff_research
+
+    return layoff_research(data)
+
+
 def run_chapter(number, data=None):
     if data is None:
         from .pipeline import prepare
