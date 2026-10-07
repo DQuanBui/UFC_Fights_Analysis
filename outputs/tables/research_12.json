@@ -1,0 +1,26 @@
+[
+  {
+    "question": "How often does the held-out model face fighters absent from its fitting sample?",
+    "answer": "998 of 1,851 held-out fights (53.9%) include at least one fighter absent from the pre-2023 model-fitting rows.",
+    "interpretation": "Familiarity is fixed using IDs in the actual decisive development cohort. An athlete remains absent from the fitting sample even after earlier test appearances update their historical features. This is not the same as a UFC debut or absence from all source history.",
+    "table": "deep_generalization_familiarity"
+  },
+  {
+    "question": "How does prediction quality change with the least-experienced opponent?",
+    "answer": "Accuracy is 58.2% when at least one fighter is a UFC debutant, versus 61.8% when both have at least five earlier UFC bouts.",
+    "interpretation": "Experience is measured strictly before each fight date. These are diagnostic slices of the already evaluated 2023-2026 model, with 2026 partial. No model, threshold or subgroup is selected for deployment from these results.",
+    "table": "deep_generalization_experience"
+  },
+  {
+    "question": "Does the model improve probability quality in every reportable familiarity group?",
+    "answer": "The lowest reportable Brier skill is 5.5% for 'Both absent from fitting data' (n=380); all reportable groups improve over the fixed development-prevalence forecast.",
+    "interpretation": "Brier skill equals one minus model squared probability error divided by reference error on the same fights. A negative value is worse than that constant forecast. The reference prevalence is learned before 2023, not from each subgroup; metrics below 30 fights are withheld.",
+    "table": "deep_generalization_familiarity"
+  },
+  {
+    "question": "Which familiarity group contributes the most observed model errors?",
+    "answer": "'Both in fitting data' contributes 334 errors (45.5% of all held-out errors); 40 have predicted-winner confidence of at least 65%.",
+    "interpretation": "Error volume depends on how often a group occurs, not just its error rate. The 65% threshold is a fixed descriptive cut, not an optimized action rule. Confidence is a model probability and does not establish that a matchup was objectively predictable.",
+    "table": "deep_generalization_errors"
+  }
+]

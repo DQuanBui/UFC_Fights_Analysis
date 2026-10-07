@@ -1,0 +1,4 @@
+group,n,errors,error_share,mean_confidence_when_wrong,errors_with_confidence_at_least_65pct
+Both absent from fitting data,380,160,0.21798365122615804,0.5662991740212788,11
+Both in fitting data,853,334,0.4550408719346049,0.5779037160523715,40
+One absent from fitting data,618,240,0.32697547683923706,0.5750381837970325,22

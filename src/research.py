@@ -1043,6 +1043,13 @@ def inactivity_questions(data):
     return layoff_research(data)
 
 
+@chapter("12")
+def generalization_questions(data):
+    from .generalization import generalization_research
+
+    return generalization_research(data)
+
+
 def run_chapter(number, data=None):
     if data is None:
         from .pipeline import prepare
