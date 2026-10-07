@@ -57,6 +57,10 @@ def main():
             print(f"Completed research chapter {number}", flush=True)
         export_research_charts()
         build_research_report()
+        from .provenance import write_manifest
+
+        write_manifest()
+        print("Recorded analysis inputs and generated artifact hashes", flush=True)
 
 
 if __name__ == "__main__":

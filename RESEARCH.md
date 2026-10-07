@@ -1,6 +1,6 @@
 # UFC research questions and answers
 
-34 additional questions extend the eight original notebooks. Each answer is calculated from the preserved local snapshot and links to its supporting evidence. Bonus research is included in notebook 06.
+46 additional questions extend the eight original notebooks. Each answer is calculated from the preserved local snapshot and links to its supporting evidence. Inactivity research is included in notebook 04, bonuses in notebook 06, and Elo/generalization in notebook 08.
 
 These are exploratory observational analyses. Full 2025 is used for annual comparisons; 2026 is partial where retained. Wilson intervals describe binomial uncertainty without fighter/event clustering. Event-bootstrap intervals preserve dependence within events, but not recurring fighters across events. Intervals are pointwise and do not correct for selection across this question catalog.
 
@@ -15,6 +15,9 @@ These are exploratory observational analyses. Full 2025 is used for annual compa
 - [07 · Which physical associations survive adjustment and sensitivity checks?](#research-07)
 - [08 · Which features help, when does the model fail, and how robust is its lift?](#research-08)
 - [09 · How do bonus era and award category change the interpretation?](#research-09)
+- [10 · Does opponent strength improve pre-fight prediction?](#research-10)
+- [11 · What changes after a long gap between UFC appearances?](#research-11)
+- [12 · How does the frozen model generalize across fighter familiarity?](#research-12)
 
 <a id="research-01"></a>
 
@@ -368,15 +371,141 @@ Across 11 shared divisions with at least 50 finishes and 50 decisions each, pool
 
 [Supporting table](outputs/tables/deep_bonus_division_standardization.csv)
 
+
+<a id="research-10"></a>
+
+## 10 · Does opponent strength improve pre-fight prediction?
+
+[Executed notebook](notebooks/08_machine_learning.ipynb) · [Answer data](outputs/tables/research_10.json)
+
+![Does opponent strength improve pre-fight prediction?](outputs/charts/research_10.png)
+
+### Does opponent-adjusted Elo add information beyond the existing histories?
+
+Adding Elo reduces development log loss by +0.0022 (paired event-bootstrap 95% interval -0.0028 to +0.0068) and improves it in 3 of five annual evaluations.
+
+**Interpretation and limits:** 2018-2022 expanding-year evaluations share identical fights, preprocessing and logistic settings. Positive reduction favors adding Elo. These are already explored development data, not a new independent test; the published holdout model is unchanged.
+
+[Supporting table](outputs/tables/deep_elo_gain.csv)
+
+### How informative is an Elo probability on its own?
+
+The fixed K=32 Elo baseline has 55.5% accuracy, log loss 0.6860, and Brier score 0.2465 across 2,422 development evaluation fights.
+
+**Interpretation and limits:** Every fighter starts at 1500; scale is 400; ratings use all earlier UFC dates including 1993. Draws update with score 0.5 and no contests do not change ratings. There is no division reset, inactivity decay or professional record outside UFC.
+
+[Supporting table](outputs/tables/deep_elo_summary.csv)
+
+### How sensitive are raw Elo probabilities to the update speed?
+
+For K=16, 32 and 64, weighted development log loss ranges from 0.6846 to 0.6885.
+
+**Interpretation and limits:** All three settings are reported as a sensitivity study. K=32 is the fixed feature specification; the best observed setting is not selected on the 2023-2026 holdout. Faster updates react more strongly to recent results and can change calibration.
+
+[Supporting table](outputs/tables/deep_elo_folds.csv)
+
+### Are raw Elo probabilities calibrated across their probability range?
+
+Among K=32 bins with at least 50 fights, the largest observed calibration gap is 3.1 points: mean predicted 36.4%, observed 33.3% (n=54).
+
+**Interpretation and limits:** Fixed probability bins describe fighter A's win chance, not confidence in a predicted winner. Wilson intervals ignore recurring fighters. Binning loses detail; this diagnostic does not recalibrate probabilities on the same observations.
+
+[Supporting table](outputs/tables/deep_elo_calibration.csv)
+
+
+<a id="research-11"></a>
+
+## 11 · What changes after a long gap between UFC appearances?
+
+[Executed notebook](notebooks/04_fighter_analysis.ipynb) · [Answer data](outputs/tables/research_11.json)
+
+![What changes after a long gap between UFC appearances?](outputs/charts/research_11.png)
+
+### Do fighters returning after a year win less often?
+
+Returning fighters with a gap over 365 days win 42.9% of 1,423 appearances, versus 51.8% of 12,420 appearances after shorter gaps.
+
+**Interpretation and limits:** Decisive UFC bouts in 2000-2025 only; debutants have no UFC rest interval and are excluded. Appearances, not independent fights, are the denominator. A long gap does not identify injury, retirement, suspension or the cause of absence.
+
+[Supporting table](outputs/tables/deep_layoff_bands.csv)
+
+### Does the rest-gap association persist among similar-age, similar-rating opponents?
+
+When rest gaps differ by at least 90 days, age by at most two years and pre-fight Elo by at most 50, the longer-rest fighter wins 51.1% of 648 bouts (event-bootstrap interval 47.2%-55.0%).
+
+**Interpretation and limits:** These fixed calipers restrict the population and may discard many bouts. Both fighters must have prior UFC appearances. This is a sensitivity check, not random assignment or a fully adjusted causal comparison.
+
+[Supporting table](outputs/tables/deep_layoff_matched.csv)
+
+### Is age composition a plausible explanation for the raw inactivity comparison?
+
+Among returning fighters aged at least 35, win shares are 39.1% after gaps over one year and 41.4% after shorter gaps. The age-stratified table shows all three age groups and their sample sizes.
+
+**Interpretation and limits:** Age strata expose one compositional difference but do not establish mediation or remove strength, era and matchup selection. Wilson intervals are descriptive and ignore recurring fighters.
+
+[Supporting table](outputs/tables/deep_layoff_age.csv)
+
+### Has the time between observed UFC appearances changed by era?
+
+Median return intervals are 147 days in 2000-2009 and 189 days in 2020-2025; the recent era's 90th percentile is 406 days.
+
+**Interpretation and limits:** These intervals are observed only when a fighter returns for a decisive bout. Athletes who never return are absent, so this is not a time-to-return survival analysis. Earlier non-decisive appearances still reset the previous-fight date.
+
+[Supporting table](outputs/tables/deep_layoff_eras.csv)
+
+
+<a id="research-12"></a>
+
+## 12 · How does the frozen model generalize across fighter familiarity?
+
+[Executed notebook](notebooks/08_machine_learning.ipynb) · [Answer data](outputs/tables/research_12.json)
+
+![How does the frozen model generalize across fighter familiarity?](outputs/charts/research_12.png)
+
+### How often does the held-out model face fighters absent from its fitting sample?
+
+998 of 1,851 held-out fights (53.9%) include at least one fighter absent from the pre-2023 model-fitting rows.
+
+**Interpretation and limits:** Familiarity is fixed using IDs in the actual decisive development cohort. An athlete remains absent from the fitting sample even after earlier test appearances update their historical features. This is not the same as a UFC debut or absence from all source history.
+
+[Supporting table](outputs/tables/deep_generalization_familiarity.csv)
+
+### How does prediction quality change with the least-experienced opponent?
+
+Accuracy is 58.2% when at least one fighter is a UFC debutant, versus 61.8% when both have at least five earlier UFC bouts.
+
+**Interpretation and limits:** Experience is measured strictly before each fight date. These are diagnostic slices of the already evaluated 2023-2026 model, with 2026 partial. No model, threshold or subgroup is selected for deployment from these results.
+
+[Supporting table](outputs/tables/deep_generalization_experience.csv)
+
+### Does the model improve probability quality in every reportable familiarity group?
+
+The lowest reportable Brier skill is 5.5% for 'Both absent from fitting data' (n=380); all reportable groups improve over the fixed development-prevalence forecast.
+
+**Interpretation and limits:** Brier skill equals one minus model squared probability error divided by reference error on the same fights. A negative value is worse than that constant forecast. The reference prevalence is learned before 2023, not from each subgroup; metrics below 30 fights are withheld.
+
+[Supporting table](outputs/tables/deep_generalization_familiarity.csv)
+
+### Which familiarity group contributes the most observed model errors?
+
+'Both in fitting data' contributes 334 errors (45.5% of all held-out errors); 40 have predicted-winner confidence of at least 65%.
+
+**Interpretation and limits:** Error volume depends on how often a group occurs, not just its error rate. The 65% threshold is a fixed descriptive cut, not an optimized action rule. Confidence is a model probability and does not establish that a matchup was objectively predictable.
+
+[Supporting table](outputs/tables/deep_generalization_errors.csv)
+
 ## Reproduce the analysis
 
 From the repository root, install the pinned requirements and run:
 
 ```powershell
 python -m pip install -r requirements.txt
-python -m src.pipeline --all
 python -m src.notebooks --build --execute
+python -m src.pipeline --all
+python -m src.provenance
 python -m pytest -q
 ```
 
 The full pipeline rebuilds all research tables, answer files, figures and this report. To refresh one notebook, run `python -m src.research_notebooks 04` (substitute 01–08). No downloads or API credentials are required for the analysis.
+
+The final pipeline run records SHA-256 digests of analysis source files, raw inputs and generated artifacts in `outputs/artifact_manifest.json`, along with Python/package versions. Verification detects changed, missing or newly added files; text line endings are normalized for Windows/Linux portability, while original raw CSVs remain byte-exact. It verifies consistency with the recorded full rebuild, not external data completeness or mathematical correctness. Individual notebook runs can change generated outputs; rerun the full pipeline before final verification. Notebook execution is checked separately.

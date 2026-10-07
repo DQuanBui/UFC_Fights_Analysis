@@ -58,12 +58,15 @@ def build_research_report():
         "",
         "```powershell",
         "python -m pip install -r requirements.txt",
-        "python -m src.pipeline --all",
         "python -m src.notebooks --build --execute",
+        "python -m src.pipeline --all",
+        "python -m src.provenance",
         "python -m pytest -q",
         "```",
         "",
         "The full pipeline rebuilds all research tables, answer files, figures and this report. To refresh one notebook, run `python -m src.research_notebooks 04` (substitute 01–08). No downloads or API credentials are required for the analysis.",
+        "",
+        "The final pipeline run records SHA-256 digests of analysis source files, raw inputs and generated artifacts in `outputs/artifact_manifest.json`, along with Python/package versions. Verification detects changed, missing or newly added files; text line endings are normalized for Windows/Linux portability, while original raw CSVs remain byte-exact. It verifies consistency with the recorded full rebuild, not external data completeness or mathematical correctness. Individual notebook runs can change generated outputs; rerun the full pipeline before final verification. Notebook execution is checked separately.",
         "",
     ]
     path = ROOT / "RESEARCH.md"
